@@ -1,0 +1,35 @@
+<div class="auth-container">
+
+    <h2>Registro</h2>
+
+    <form (ngSubmit)="register()">
+
+        <input type="text" placeholder="Nombre" [(ngModel)]="nombre" name="nombre" required />
+
+        <input type="email" placeholder="Correo" [(ngModel)]="email" name="email" required />
+
+        <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password" required />
+
+        <select [(ngModel)]="role" name="role">
+
+            <option value="CLIENTE">Cliente</option>
+            <option value="ADMINISTRADOR">Administrador</option>
+            <option value="RECEPCIONISTA">Recepcionista</option>
+            <option value="MESERO">Mesero</option>
+            <option value="COCINERO">Cocinero</option>
+            <option value="AUXILIAR_COCINA">Auxiliar Cocina</option>
+            <option value="CAJERO">Cajero</option>
+
+        </select>
+
+        <button type="submit">
+            Registrar
+        </button>
+
+    </form>
+
+    <a routerLink="/login">
+        Volver al login
+    </a>
+
+</div>

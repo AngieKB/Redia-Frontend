@@ -1,25 +1,47 @@
-<div class="profile-container">
+<div class="profile-container" style="display: flex; align-items: center; gap: 1rem;">
   <div *ngIf="!isLoggedIn" class="auth-buttons">
-    <a routerLink="/login" class="btn btn-outline">Login</a>
-    <a routerLink="/register" class="btn btn-primary">Register</a>
+    <a routerLink="/login" class="nav-btn btn-login">Iniciar sesión</a>
+    <a routerLink="/register" class="nav-btn btn-register">Registrarse</a>
   </div>
-  
-  <div *ngIf="isLoggedIn" class="profile-dropdown">
+
+  <div class="profile-dropdown">
     <div class="profile-info">
       <div class="avatar">
-        <span class="avatar-text">{{ userName.charAt(0).toUpperCase() }}</span>
+        <span class="avatar-text">
+          <ng-container *ngIf="isLoggedIn">{{ userName.charAt(0).toUpperCase() }}</ng-container>
+          <ng-container *ngIf="!isLoggedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </ng-container>
+        </span>
       </div>
-      <div class="user-details">
-        <span class="user-name">{{ userName }}</span>
-        <span class="user-role">{{ userRole }}</span>
+      <div class="user-details" style="display: none;">
+        <span class="user-name">{{ isLoggedIn ? userName : 'Usuario Anonimo' }}</span>
+        <span class="user-role">{{ isLoggedIn ? userRole : 'Sin cuenta' }}</span>
       </div>
     </div>
-    
+
     <div class="dropdown-menu">
-      <a routerLink="/profile" class="dropdown-item">My Profile</a>
-      <a routerLink="/settings" class="dropdown-item">Settings</a>
-      <div class="dropdown-divider"></div>
-      <button (click)="logout()" class="dropdown-item logout-btn">Logout</button>
+      <div class="dropdown-header" style="padding: 1rem; border-bottom: 1px solid var(--ion-color-light);">
+        <p style="margin: 0; font-weight: bold; color: var(--ion-color-primary);">{{ isLoggedIn ? userName : 'Invitado'
+          }}</p>
+        <p style="margin: 0; font-size: 0.8rem; color: var(--ion-color-medium);">{{ isLoggedIn ? userRole : 'Sin Cuenta'
+          }}</p>
+      </div>
+
+      <ng-container *ngIf="isLoggedIn">
+        <a routerLink="/profile" class="dropdown-item">Mi Perfil</a>
+        <a routerLink="/settings" class="dropdown-item">Ajustes</a>
+        <div class="dropdown-divider"></div>
+        <button (click)="logout()" class="dropdown-item logout-btn">Cerrar sesión</button>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/login" class="dropdown-item">¿Ya tienes cuenta? Ingresa</a>
+      </ng-container>
     </div>
   </div>
 </div>

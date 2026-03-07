@@ -1,33 +1,33 @@
 /* Redia Theme - Web App */
 :root {
   --ion-color-primary: #612D53;
-  --ion-color-primary-rgb: 97,45,83;
+  --ion-color-primary-rgb: 97, 45, 83;
   --ion-color-primary-contrast: #f3f4f4;
-  --ion-color-primary-contrast-rgb: 243,244,244;
+  --ion-color-primary-contrast-rgb: 243, 244, 244;
   --ion-color-primary-shade: #552849;
   --ion-color-primary-tint: #714264;
 
   --ion-color-secondary: #853953;
-  --ion-color-secondary-rgb: 133,57,83;
+  --ion-color-secondary-rgb: 133, 57, 83;
   --ion-color-secondary-contrast: #f3f4f4;
-  --ion-color-secondary-contrast-rgb: 243,244,244;
+  --ion-color-secondary-contrast-rgb: 243, 244, 244;
   --ion-color-secondary-shade: #753249;
   --ion-color-secondary-tint: #914d64;
 
   --ion-color-tertiary: #2C2C2C;
-  --ion-color-tertiary-rgb: 44,44,44;
+  --ion-color-tertiary-rgb: 44, 44, 44;
   --ion-color-tertiary-contrast: #f3f4f4;
-  --ion-color-tertiary-contrast-rgb: 243,244,244;
+  --ion-color-tertiary-contrast-rgb: 243, 244, 244;
 
   --ion-background-color: #f3f4f4;
-  --ion-background-color-rgb: 243,244,244;
+  --ion-background-color-rgb: 243, 244, 244;
 
   --ion-text-color: #2C2C2C;
-  --ion-text-color-rgb: 44,44,44;
-  
+  --ion-text-color-rgb: 44, 44, 44;
+
   --ion-card-background: #ffffff;
   --ion-item-background: #ffffff;
-  
+
   --ion-font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
 }
 
@@ -106,7 +106,7 @@ select:focus {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 40px;
   margin-bottom: 30px;
 }
@@ -159,7 +159,7 @@ select:focus {
     gap: 30px;
     text-align: center;
   }
-  
+
   .app-footer {
     padding: 30px 15px 15px;
   }

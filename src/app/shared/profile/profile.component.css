@@ -8,36 +8,36 @@
   align-items: center;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+.nav-btn {
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  border: 1px solid;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   cursor: pointer;
+  border: 2px solid transparent;
 }
 
-.btn-outline {
+.btn-login {
   color: var(--ion-color-primary);
-  border-color: var(--ion-color-primary);
   background: transparent;
 }
 
-.btn-outline:hover {
-  background: var(--ion-color-primary);
-  color: var(--ion-color-primary-contrast);
+.btn-login:hover {
+  color: var(--ion-color-secondary);
+  background: var(--ion-background-color);
 }
 
-.btn-primary {
+.btn-register {
   background: var(--ion-color-primary);
-  color: var(--ion-color-primary-contrast);
-  border-color: var(--ion-color-primary);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(97, 45, 83, 0.2);
 }
 
-.btn-primary:hover {
-  background: var(--ion-color-secondary);
-  border-color: var(--ion-color-secondary);
+.btn-register:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(97, 45, 83, 0.3);
 }
 
 .profile-dropdown {
@@ -143,12 +143,12 @@
     flex-direction: column;
     gap: 0.25rem;
   }
-  
-  .btn {
+
+  .nav-btn {
     font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
   }
-  
+
   .user-details {
     display: none;
   }

@@ -5,11 +5,13 @@ import { RouterLink } from '@angular/router'
 import { Router } from '@angular/router'
 import { AuthService } from '../../../core/services/auth.service'
 import { AlertService } from '../../../core/services/alert.service'
+import { NavbarComponent } from '../../../shared/navbar/navbar.component'
+import { FooterComponent } from '../../../shared/footer/footer.component'
 
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink],
+    imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css']
 })
@@ -18,6 +20,8 @@ export class RegisterComponent {
     nombre = ''
     email = ''
     password = ''
+    confirmPassword = ''
+    passwordError = ''
     role = 'CLIENTE' // Siempre será cliente
 
     constructor(
@@ -27,6 +31,12 @@ export class RegisterComponent {
     ) { }
 
     register() {
+        this.passwordError = '';
+
+        if (this.password !== this.confirmPassword) {
+            this.passwordError = 'Las contraseñas no coinciden.';
+            return;
+        }
 
         const data = {
             nombre: this.nombre,

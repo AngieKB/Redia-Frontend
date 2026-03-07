@@ -36,7 +36,7 @@ form input::placeholder {
 }
 
 form button {
-  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  background: var(--ion-color-primary);
   color: var(--ion-color-primary-contrast);
   width: 100%;
   margin-top: 20px;
@@ -83,11 +83,11 @@ form button:active {
   .auth-container {
     padding: 16px;
   }
-  
+
   form {
     padding: 30px 20px;
   }
-  
+
   .auth-container h2 {
     font-size: 28px;
     margin-bottom: 30px;

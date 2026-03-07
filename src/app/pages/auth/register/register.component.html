@@ -1,3 +1,5 @@
+<app-navbar></app-navbar>
+
 <div class="auth-container">
   <div class="logo-section">
     <h2>Redia</h2>
@@ -6,36 +8,27 @@
 
   <form (ngSubmit)="register()">
     <div class="form-group">
-      <input 
-        type="text" 
-        placeholder="Nombre completo" 
-        [(ngModel)]="nombre" 
-        name="nombre" 
-        required 
-        autocomplete="name"
-      />
+      <input type="text" placeholder="Nombre completo" [(ngModel)]="nombre" name="nombre" required
+        autocomplete="name" />
     </div>
 
     <div class="form-group">
-      <input 
-        type="email" 
-        placeholder="Correo electrónico" 
-        [(ngModel)]="email" 
-        name="email" 
-        required 
-        autocomplete="email"
-      />
+      <input type="email" placeholder="Correo electrónico" [(ngModel)]="email" name="email" required
+        autocomplete="email" />
     </div>
 
     <div class="form-group">
-      <input 
-        type="password" 
-        placeholder="Contraseña" 
-        [(ngModel)]="password" 
-        name="password" 
-        required 
-        autocomplete="new-password"
-      />
+      <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password" required
+        autocomplete="new-password" />
+    </div>
+
+    <div class="form-group">
+      <input type="password" placeholder="Confirmar contraseña" [(ngModel)]="confirmPassword" name="confirmPassword"
+        required autocomplete="new-password" />
+    </div>
+
+    <div *ngIf="passwordError" style="color: red; font-size: 0.9rem; margin-bottom: 15px; text-align: center;">
+      {{ passwordError }}
     </div>
 
     <button type="submit">
@@ -49,3 +42,5 @@
     </a>
   </div>
 </div>
+
+<app-footer></app-footer>

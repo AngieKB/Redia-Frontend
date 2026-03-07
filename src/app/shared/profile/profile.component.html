@@ -1,0 +1,25 @@
+<div class="profile-container">
+  <div *ngIf="!isLoggedIn" class="auth-buttons">
+    <a routerLink="/login" class="btn btn-outline">Login</a>
+    <a routerLink="/register" class="btn btn-primary">Register</a>
+  </div>
+  
+  <div *ngIf="isLoggedIn" class="profile-dropdown">
+    <div class="profile-info">
+      <div class="avatar">
+        <span class="avatar-text">{{ userName.charAt(0).toUpperCase() }}</span>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ userName }}</span>
+        <span class="user-role">{{ userRole }}</span>
+      </div>
+    </div>
+    
+    <div class="dropdown-menu">
+      <a routerLink="/profile" class="dropdown-item">My Profile</a>
+      <a routerLink="/settings" class="dropdown-item">Settings</a>
+      <div class="dropdown-divider"></div>
+      <button (click)="logout()" class="dropdown-item logout-btn">Logout</button>
+    </div>
+  </div>
+</div>

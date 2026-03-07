@@ -1,16 +1,166 @@
-/* You can add global styles to this file, and also import other style files */
+/* Redia Theme - Web App */
+:root {
+  --ion-color-primary: #612D53;
+  --ion-color-primary-rgb: 97,45,83;
+  --ion-color-primary-contrast: #f3f4f4;
+  --ion-color-primary-contrast-rgb: 243,244,244;
+  --ion-color-primary-shade: #552849;
+  --ion-color-primary-tint: #714264;
+
+  --ion-color-secondary: #853953;
+  --ion-color-secondary-rgb: 133,57,83;
+  --ion-color-secondary-contrast: #f3f4f4;
+  --ion-color-secondary-contrast-rgb: 243,244,244;
+  --ion-color-secondary-shade: #753249;
+  --ion-color-secondary-tint: #914d64;
+
+  --ion-color-tertiary: #2C2C2C;
+  --ion-color-tertiary-rgb: 44,44,44;
+  --ion-color-tertiary-contrast: #f3f4f4;
+  --ion-color-tertiary-contrast-rgb: 243,244,244;
+
+  --ion-background-color: #f3f4f4;
+  --ion-background-color-rgb: 243,244,244;
+
+  --ion-text-color: #2C2C2C;
+  --ion-text-color-rgb: 44,44,44;
+  
+  --ion-card-background: #ffffff;
+  --ion-item-background: #ffffff;
+  
+  --ion-font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
+}
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f5f5f5;
+  margin: 0;
+  font-family: var(--ion-font-family);
+  background-color: var(--ion-background-color);
+  color: var(--ion-text-color);
+  min-height: 100vh;
 }
 
 input {
-    padding: 8px;
-    margin: 5px 0;
+  padding: 12px 16px;
+  margin: 8px 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: var(--ion-font-family);
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--ion-color-primary);
 }
 
 button {
-    padding: 8px 15px;
-    cursor: pointer;
+  padding: 12px 24px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--ion-font-family);
+  transition: all 0.3s ease;
+}
+
+select {
+  padding: 12px 16px;
+  margin: 8px 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: var(--ion-font-family);
+  background-color: white;
+  width: 100%;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--ion-color-primary);
+}
+
+/* Main content layout */
+.main-content {
+  min-height: calc(100vh - 200px);
+  padding-bottom: 2rem;
+}
+
+/* Footer styles */
+.app-footer {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  color: var(--ion-color-primary-contrast);
+  padding: 40px 20px 20px;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.footer-section h3 {
+  color: var(--ion-color-primary-contrast);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.footer-section h4 {
+  color: var(--ion-color-primary-contrast);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.footer-section p {
+  color: rgba(243, 244, 244, 0.9);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.contact-info p {
+  margin-bottom: 8px;
+}
+
+.contact-info strong {
+  color: var(--ion-color-primary-contrast);
+  font-weight: 600;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(243, 244, 244, 0.2);
+  padding-top: 20px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: rgba(243, 244, 244, 0.8);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+  
+  .app-footer {
+    padding: 30px 15px 15px;
+  }
 }

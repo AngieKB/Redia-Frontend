@@ -1,35 +1,51 @@
 <div class="auth-container">
+  <div class="logo-section">
+    <h2>Redia</h2>
+    <p style="color: var(--ion-color-secondary); margin-top: -10px; margin-bottom: 30px;">Crear nueva cuenta</p>
+  </div>
 
-    <h2>Registro</h2>
+  <form (ngSubmit)="register()">
+    <div class="form-group">
+      <input 
+        type="text" 
+        placeholder="Nombre completo" 
+        [(ngModel)]="nombre" 
+        name="nombre" 
+        required 
+        autocomplete="name"
+      />
+    </div>
 
-    <form (ngSubmit)="register()">
+    <div class="form-group">
+      <input 
+        type="email" 
+        placeholder="Correo electrónico" 
+        [(ngModel)]="email" 
+        name="email" 
+        required 
+        autocomplete="email"
+      />
+    </div>
 
-        <input type="text" placeholder="Nombre" [(ngModel)]="nombre" name="nombre" required />
+    <div class="form-group">
+      <input 
+        type="password" 
+        placeholder="Contraseña" 
+        [(ngModel)]="password" 
+        name="password" 
+        required 
+        autocomplete="new-password"
+      />
+    </div>
 
-        <input type="email" placeholder="Correo" [(ngModel)]="email" name="email" required />
+    <button type="submit">
+      Registrarse
+    </button>
+  </form>
 
-        <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password" required />
-
-        <select [(ngModel)]="role" name="role">
-
-            <option value="CLIENTE">Cliente</option>
-            <option value="ADMINISTRADOR">Administrador</option>
-            <option value="RECEPCIONISTA">Recepcionista</option>
-            <option value="MESERO">Mesero</option>
-            <option value="COCINERO">Cocinero</option>
-            <option value="AUXILIAR_COCINA">Auxiliar Cocina</option>
-            <option value="CAJERO">Cajero</option>
-
-        </select>
-
-        <button type="submit">
-            Registrar
-        </button>
-
-    </form>
-
+  <div class="links">
     <a routerLink="/login">
-        Volver al login
+      ¿Ya tienes cuenta? Iniciar sesión
     </a>
-
+  </div>
 </div>

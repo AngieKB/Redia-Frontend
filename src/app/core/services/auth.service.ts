@@ -43,6 +43,20 @@ export class AuthService {
 
     }
 
+    // Solicitar código de restablecimiento
+    requestPasswordReset(email: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/request-password-reset`, { email })
+    }
+
+    // Restablecer contraseña con código
+    resetPassword(data: {
+        email: string
+        code: string
+        newPassword: string
+    }): Observable<any> {
+        return this.http.post(`${this.apiUrl}/reset-password`, data)
+    }
+
     // Actualizar contraseña
     refreshToken(): Observable<any> {
 

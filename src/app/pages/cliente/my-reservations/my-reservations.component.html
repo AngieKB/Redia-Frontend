@@ -1,0 +1,50 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-inner">
+            <div>
+                <h1 class="page-title">Mis Reservas</h1>
+                <p class="page-subtitle">Historial y estado de tus reservas</p>
+            </div>
+            <button class="btn-primary" routerLink="/cliente/create-reservation">
+                ➕ Nueva Reserva
+            </button>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="reservations.length === 0">
+            <p>Aún no tienes reservas</p>
+            <button class="btn-primary" routerLink="/cliente/create-reservation">Crear mi primera reserva</button>
+        </div>
+
+        <!-- Reservations list -->
+        <div class="reservations-list" *ngIf="reservations.length > 0">
+            <div class="reservation-card" *ngFor="let r of reservations">
+                <div class="res-main">
+                    <div class="res-date">
+                        <span class="date-day">{{ r.fecha | date:'d' }}</span>
+                        <span class="date-month">{{ r.fecha | date:'MMM' }}</span>
+                    </div>
+                    <div class="res-info">
+                        <div class="res-time">{{ r.horaEntrada }} – {{ r.horaSalida }}</div>
+                        <div class="res-people">{{ r.personas }} personas</div>
+                    </div>
+                </div>
+                <div class="res-footer">
+                    <span class="status-badge" [ngClass]="'status-' + r.estado">{{ r.estado }}</span>
+                    <div class="res-actions">
+                        <button class="btn-cancel-res" (click)="cancelarReserva(r)"
+                            [disabled]="r.estado === 'cancelada' || r.estado === 'finalizada'">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,64 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-inner">
+            <div>
+                <h1 class="page-title">Panel Recepcionista</h1>
+                <p class="page-subtitle">Gestión rápida del día</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card accent">
+                <div class="stat-info">
+                    <span class="stat-label">Reservas de Hoy</span>
+                    <span class="stat-value large">14</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Próximas Reservas</span>
+                    <span class="stat-value large">6</span>
+                    <span class="stat-sub">Siguientes 2 horas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming reservations preview -->
+        <div class="section-title">Próximas Reservas</div>
+        <div class="reservations-list" *ngIf="proximasReservas.length > 0">
+            <div class="reservation-card compact" *ngFor="let r of proximasReservas">
+                <div class="res-main">
+                    <div class="res-date">
+                        <span class="date-day">{{ r.fecha | date:'d' }}</span>
+                        <span class="date-month">{{ r.fecha | date:'MMM' }}</span>
+                    </div>
+                    <div class="res-info">
+                        <div class="res-client"> {{ r.cliente }}</div>
+                        <div class="res-time"> {{ r.horaEntrada }} – {{ r.horaSalida }}</div>
+                        <div class="res-people"> {{ r.personas }} personas</div>
+                    </div>
+                </div>
+                <span class="status-badge" [ngClass]="'status-' + r.estado">{{ r.estado }}</span>
+            </div>
+        </div>
+        <div class="empty-state" *ngIf="proximasReservas.length === 0">
+            <p>No hay próximas reservas inmediatas</p>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="section-title">Accesos Rápidos</div>
+        <div class="action-grid">
+            <button class="action-card primary" routerLink="/recepcionista/reservations">
+                <span class="action-label">Ver Reservas</span>
+                <span class="action-desc">Confirmar, rechazar y gestionar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,21 +1,21 @@
-import { Component } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { Router } from '@angular/router'
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { NavbarComponent } from '../../../shared/navbar/navbar.component';
+import { FooterComponent } from '../../../shared/footer/footer.component';
 
 @Component({
-    selector: 'app-dashboard',
+    selector: 'app-dashboard-client',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent],
     templateUrl: './dashboard-client.component.html',
-    styleUrls: ['./dashboard-client.component.css']
+    styleUrls: ['./dashboard-client.component.css'],
 })
 export class DashboardClientComponent {
-
-    constructor(private router: Router) { }
-
-    logout() {
-        localStorage.clear()
-        this.router.navigate(['/login'])
-    }
-
+    proximaReserva = {
+        fecha: 'Sábado, 8 Mar 2026',
+        hora: '19:00 – 20:30',
+        personas: 4
+    };
+    totalReservas = 12;
 }

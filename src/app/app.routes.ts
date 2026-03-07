@@ -4,22 +4,20 @@ import { HomeComponent } from './pages/home/home.component'
 import { LoginComponent } from './pages/auth/login/login.component'
 import { RegisterComponent } from './pages/auth/register/register.component'
 import { RecoverPasswordComponent } from './pages/auth/recover-password/recover-password.component'
-import { ResetPassword } from './pages/auth/reset-password.component'
+import { ResetPassword } from './pages/auth/reset-password/reset-password.component'
 import { DashboardClientComponent } from './pages/cliente/dashboard-client/dashboard-client.component'
 
-import { DashboardAdmin } from './pages/admin/dashboard-admin/dashboard-admin'
-import { Reservations as AdminReservations } from './pages/admin/reservations/reservations'
-import { Users } from './pages/admin/users/users'
+import { DashboardAdmin } from './pages/admin/dashboard-admin/dashboard-admin.component'
+import { Reservations as AdminReservations } from './pages/admin/reservations/reservations.component'
+import { Users } from './pages/admin/users/users.component'
 
-import { DashboardRecepcionista } from './pages/recepcionista/dashboard-recepcionista/dashboard-recepcionista'
-import { Reservations as RecepcionistaReservations } from './pages/recepcionista/reservations/reservations'
-import { ReservationsDetail as RecepcionistaReservationsDetail } from './pages/recepcionista/reservations-detail/reservations-detail.component'
+import { DashboardRecepcionista } from './pages/recepcionista/dashboard-recepcionista/dashboard-recepcionista.component'
+import { Reservations as RecepcionistaReservations } from './pages/recepcionista/reservations/reservations.component'
 
-import { CreateReservation } from './pages/cliente/create-reservation/create-reservation'
-import { MyReservations } from './pages/cliente/my-reservations/my-reservations'
-import { ReservationDetail } from './pages/cliente/reservation-detail/reservation-detail'
+import { CreateReservation } from './pages/cliente/create-reservation/create-reservation.component'
+import { MyReservations } from './pages/cliente/my-reservations/my-reservations.component'
 
-import { ProfilePage } from './pages/profile/profile-page'
+import { ProfilePage } from './pages/profile/profile-page.component'
 import { SettingsPage } from './pages/settings/settings-page'
 export const routes: Routes = [
 
@@ -74,10 +72,6 @@ export const routes: Routes = [
         path: 'recepcionista/reservations',
         component: RecepcionistaReservations
     },
-    {
-        path: 'recepcionista/reservations/:id',
-        component: RecepcionistaReservationsDetail
-    },
 
     {
         path: 'cliente/create-reservation',
@@ -86,10 +80,6 @@ export const routes: Routes = [
     {
         path: 'cliente/my-reservations',
         component: MyReservations
-    },
-    {
-        path: 'cliente/reservation/:id',
-        component: ReservationDetail
     },
 
     {

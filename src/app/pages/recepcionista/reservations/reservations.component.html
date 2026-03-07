@@ -1,0 +1,67 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-inner">
+            <div>
+                <h1 class="page-title">Gestión de Reservas</h1>
+                <p class="page-subtitle">Confirma, rechaza o cancela reservas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <!-- Filters -->
+        <div class="filters-bar">
+            <input type="text" placeholder="🔍 Buscar por cliente o fecha..." class="search-input" />
+            <select class="filter-select">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="confirmada">Confirmada</option>
+                <option value="rechazada">Rechazada</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="finalizada">Finalizada</option>
+            </select>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="reservations.length === 0">
+            <span class="empty-icon">📋</span>
+            <p>No hay reservas para mostrar</p>
+        </div>
+
+        <!-- Reservations list -->
+        <div class="reservations-list" *ngIf="reservations.length > 0">
+            <div class="reservation-card" *ngFor="let r of reservations">
+                <div class="res-main">
+                    <div class="res-date">
+                        <span class="date-day">{{ r.fecha | date:'d' }}</span>
+                        <span class="date-month">{{ r.fecha | date:'MMM' }}</span>
+                    </div>
+                    <div class="res-info">
+                        <div class="res-client">👤 {{ r.cliente }}</div>
+                        <div class="res-time">🕐 {{ r.horaEntrada }} – {{ r.horaSalida }}</div>
+                        <div class="res-people">👥 {{ r.personas }} personas</div>
+                    </div>
+                </div>
+                <div class="res-footer">
+                    <span class="status-badge" [ngClass]="'status-' + r.estado">{{ r.estado }}</span>
+                    <div class="res-actions">
+                        <button class="btn-confirm" (click)="confirmarReserva(r)" [disabled]="r.estado !== 'pendiente'">
+                            Confirmar
+                        </button>
+                        <button class="btn-reject" (click)="rechazarReserva(r)" [disabled]="r.estado !== 'pendiente'">
+                            Rechazar
+                        </button>
+                        <button class="btn-cancel-res" (click)="cancelarReserva(r)"
+                            [disabled]="r.estado === 'cancelada' || r.estado === 'finalizada'">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

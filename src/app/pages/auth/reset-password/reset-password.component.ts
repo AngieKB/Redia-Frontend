@@ -2,9 +2,9 @@ import { Component } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterLink, Router } from '@angular/router'
-import { NavbarComponent } from '../../shared/navbar/navbar.component'
-import { FooterComponent } from '../../shared/footer/footer.component'
-import { AlertService } from '../../core/services/alert.service'
+import { NavbarComponent } from '../../../shared/navbar/navbar.component'
+import { FooterComponent } from '../../../shared/footer/footer.component'
+import { AlertService } from '../../../core/services/alert.service'
 
 @Component({
     selector: 'app-reset-password',

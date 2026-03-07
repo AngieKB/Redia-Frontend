@@ -1,0 +1,56 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-inner">
+            <div>
+                <h1 class="page-title">Nueva Reserva</h1>
+                <p class="page-subtitle">Completa los datos para reservar tu mesa</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <div class="form-card">
+            <form class="reservation-form" (ngSubmit)="onSubmit()" #reservationForm="ngForm">
+
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input id="fecha" type="date" name="fecha" [(ngModel)]="reservation.fecha" required />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="horaEntrada">Hora de Entrada</label>
+                        <input id="horaEntrada" type="time" name="horaEntrada" [(ngModel)]="reservation.horaEntrada"
+                            (change)="onHoraEntradaChange()" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="horaSalida">Hora de Salida</label>
+                        <input id="horaSalida" type="time" name="horaSalida" [(ngModel)]="reservation.horaSalida"
+                            required />
+                        <span class="field-hint">Máximo 2 horas después de la entrada</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="personas">Número de Personas</label>
+                    <input id="personas" type="number" name="personas" [(ngModel)]="reservation.personas" min="1"
+                        max="20" placeholder="Ej: 4" required />
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" routerLink="/dashboard">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary" [disabled]="reservationForm.invalid">
+                        Crear Reserva
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

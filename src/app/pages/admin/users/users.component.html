@@ -1,0 +1,110 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-inner">
+            <div>
+                <h1 class="page-title">Gestión de Usuarios</h1>
+                <p class="page-subtitle">Administra los usuarios del sistema</p>
+            </div>
+            <button class="btn-primary" (click)="abrirModalCrear()">
+                ➕ Crear Usuario
+            </button>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <!-- Filters -->
+        <div class="filters-bar">
+            <input type="text" placeholder="🔍 Buscar por nombre o email..." class="search-input" />
+            <select class="filter-select">
+                <option value="">Todos los roles</option>
+                <option value="admin">Admin</option>
+                <option value="recepcionista">Recepcionista</option>
+                <option value="cliente">Cliente</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>
+                            <div class="user-name-cell">
+                                <div class="user-avatar">{{ user.nombre.charAt(0) }}</div>
+                                {{ user.nombre }}
+                            </div>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.telefono }}</td>
+                        <td>
+                            <span class="role-badge" [ngClass]="'role-' + user.rol">{{ user.rol }}</span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-table-edit" (click)="editarUsuario(user)">Editar</button>
+                                <button class="btn-table-delete" (click)="eliminarUsuario(user)">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="users.length === 0">
+                        <td colspan="5" class="empty-row">No hay usuarios registrados</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Crear/Editar Usuario -->
+    <div class="modal-overlay" *ngIf="showModal" (click)="cerrarModal()">
+        <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ editMode ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
+                <button class="modal-close" (click)="cerrarModal()">✕</button>
+            </div>
+            <form class="modal-form" (ngSubmit)="guardarUsuario()">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" [(ngModel)]="currentUser.nombre" name="nombre" placeholder="Nombre completo"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" [(ngModel)]="currentUser.email" name="email" placeholder="correo@ejemplo.com"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" [(ngModel)]="currentUser.telefono" name="telefono"
+                        placeholder="+57 300 000 0000" />
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select [(ngModel)]="currentUser.rol" name="rol" required>
+                        <option value="">Seleccionar rol</option>
+                        <option value="admin">Admin</option>
+                        <option value="recepcionista">Recepcionista</option>
+                        <option value="cliente">Cliente</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">{{ editMode ? 'Guardar Cambios' : 'Crear Usuario'
+                        }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

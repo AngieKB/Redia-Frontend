@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -16,12 +17,16 @@ export class ProfileComponent implements OnInit {
   isLoggedIn = false;
   isDropdownOpen = false;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.checkAuthStatus();
-    // Re-check periodically since navigation doesn't always trigger a component reload in Angular SPAs.
-    // Alternatively, a global service is better, but this solves the immediate UI issue simply.
+    // Re-check on every navigation so Google login photo appears immediately
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkAuthStatus();
+    });
   }
 
   checkAuthStatus() {
@@ -30,15 +35,9 @@ export class ProfileComponent implements OnInit {
     const nombre = localStorage.getItem('nombre');
     const foto = localStorage.getItem('fotoUrl');
     this.isLoggedIn = !!token;
-    if (role) {
-      this.userRole = role;
-    }
-    if (nombre) {
-      this.userName = nombre;
-    }
-    if (foto) {
-      this.userPhoto = foto;
-    }
+    this.userRole = role || '';
+    this.userName = nombre || '';
+    this.userPhoto = foto || '';
   }
 
   toggleDropdown() {
@@ -46,10 +45,18 @@ export class ProfileComponent implements OnInit {
   }
 
   logout() {
+    // Clear ALL user-related keys from localStorage
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');
+    localStorage.removeItem('nombre');
+    localStorage.removeItem('email');
+    localStorage.removeItem('telefono');
+    localStorage.removeItem('fotoUrl');
     this.isLoggedIn = false;
+    this.userPhoto = '';
+    this.userName = '';
+    this.userRole = '';
     window.location.href = '/login';
   }
 }

@@ -72,13 +72,8 @@ export class LoginComponent implements OnInit {
                         if (res.telefono) localStorage.setItem('telefono', res.telefono)
                         if (res.fotoUrl) localStorage.setItem('fotoUrl', res.fotoUrl)
 
-                        if (res.role === 'ADMINISTRADOR') {
-                            this.router.navigate(['/admin/dashboard'])
-                        } else if (res.role === 'RECEPCIONISTA') {
-                            this.router.navigate(['/recepcionista/dashboard'])
-                        } else {
-                            this.router.navigate(['/cliente/my-reservations'])
-                        }
+                        // Always go to complete-profile after Google login
+                        this.router.navigate(['/complete-google-profile'])
                     },
                     error: (err) => {
                         this.errorMessage = this.getBackendError(err, 'Error con el inicio de sesión de Google. Inténtalo de nuevo.');

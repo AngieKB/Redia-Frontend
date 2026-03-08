@@ -1,0 +1,142 @@
+<app-navbar></app-navbar>
+
+<div class="auth-container">
+    <div class="header-with-back"
+        style="display: flex; align-items: center; justify-content: flex-start; margin-bottom: 20px;">
+        <button class="back-btn" (click)="goBack()" title="Volver al inicio de sesión"
+            style="background: none; border: none; cursor: pointer; color: var(--ion-color-secondary); padding: 0; margin-right: 15px; display: flex; align-items: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+    </div>
+    <div class="logo-section">
+        <h2>Redia</h2>
+        <p style="color: var(--ion-color-secondary); margin-top: -10px; margin-bottom: 10px;">Completa tu perfil</p>
+        <p style="font-size: 13px; color: #888; margin-bottom: 30px; text-align: center; max-width: 340px;">
+            Iniciaste sesión con Google. Por favor, completa la siguiente información obligatoria para continuar.
+        </p>
+    </div>
+
+    <!-- Google preview banner -->
+    <div class="google-preview-banner">
+        <img [src]="previewUrl || userPhoto || 'assets/default-avatar.png'" class="google-avatar" alt="foto de perfil"
+            (error)="$any($event.target).style.display='none'" />
+        <div>
+            <p class="google-name">{{ userName }}</p>
+            <p class="google-email">{{ userEmail }}</p>
+        </div>
+    </div>
+
+    <form (ngSubmit)="save()" novalidate>
+
+        <!-- Foto personalizada -->
+        <div class="form-group">
+            <label>Foto de perfil <span class="optional">(opcional)</span></label>
+            <input type="file" id="fotoInput" (change)="onFileSelected($event)" accept="image/*" />
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-group">
+            <label>Teléfono <span class="hint">(10 dígitos)</span></label>
+            <input type="tel" placeholder="Ej: 3001234567" [(ngModel)]="telefono" name="telefono" inputmode="numeric"
+                maxlength="10" (keypress)="soloNumeros($event)" />
+            <div *ngIf="errors.telefono" class="inline-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                {{ errors.telefono }}
+            </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-group">
+            <label>Contraseña <span class="hint">(mín. 8 car., mayúscula, número y símbolo)</span></label>
+            <div class="password-group">
+                <input [type]="showPassword ? 'text' : 'password'" placeholder="Crea una contraseña"
+                    [(ngModel)]="password" name="password" autocomplete="new-password" />
+                <span class="toggle-password-icon" (click)="togglePasswordVisibility()" title="Mostrar/Ocultar">
+                    <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                        </path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </span>
+            </div>
+            <div *ngIf="errors.password" class="inline-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                {{ errors.password }}
+            </div>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="form-group">
+            <label>Confirmar contraseña</label>
+            <div class="password-group">
+                <input [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Repite tu contraseña"
+                    [(ngModel)]="confirmPassword" name="confirmPassword" autocomplete="new-password" />
+                <span class="toggle-password-icon" (click)="toggleConfirmPasswordVisibility()">
+                    <svg *ngIf="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg *ngIf="showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                        </path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </span>
+            </div>
+            <div *ngIf="errors.confirmPassword" class="inline-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                {{ errors.confirmPassword }}
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="inline-error">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {{ errorMessage }}
+        </div>
+
+        <button type="submit" [disabled]="isLoading">
+            {{ isLoading ? 'Guardando...' : 'Guardar y continuar' }}
+        </button>
+
+    </form>
+</div>
+
+<app-footer></app-footer>

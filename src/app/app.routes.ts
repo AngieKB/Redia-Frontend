@@ -5,7 +5,6 @@ import { LoginComponent } from './pages/auth/login/login.component'
 import { RegisterComponent } from './pages/auth/register/register.component'
 import { RecoverPasswordComponent } from './pages/auth/recover-password/recover-password.component'
 import { ResetPassword } from './pages/auth/reset-password/reset-password.component'
-import { DashboardClientComponent } from './pages/cliente/dashboard-client/dashboard-client.component'
 
 import { DashboardAdmin } from './pages/admin/dashboard-admin/dashboard-admin.component'
 import { Reservations as AdminReservations } from './pages/admin/reservations/reservations.component'
@@ -40,11 +39,6 @@ export const routes: Routes = [
     {
         path: 'reset-password',
         component: ResetPassword
-    },
-
-    {
-        path: 'dashboard',
-        component: DashboardClientComponent
     },
 
     {

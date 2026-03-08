@@ -7,7 +7,8 @@
   <div class="profile-dropdown">
     <div class="profile-info" (click)="toggleDropdown()">
       <div class="avatar">
-        <span class="avatar-text">
+        <img *ngIf="userPhoto" [src]="userPhoto" alt="Avatar" class="avatar-photo" />
+        <span class="avatar-text" *ngIf="!userPhoto">
           <ng-container *ngIf="isLoggedIn">{{ userName.charAt(0).toUpperCase() }}</ng-container>
           <ng-container *ngIf="!isLoggedIn">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"

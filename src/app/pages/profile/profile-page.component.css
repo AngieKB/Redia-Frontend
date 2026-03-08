@@ -34,6 +34,15 @@
     box-shadow: 0 6px 20px rgba(97, 45, 83, 0.3);
 }
 
+.avatar-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 6px 20px rgba(97, 45, 83, 0.3);
+    border: 3px solid var(--ion-color-primary);
+}
+
 .avatar-name {
     margin: 0;
     font-size: 18px;
@@ -154,4 +163,61 @@
         width: 100%;
         text-align: center;
     }
+}
+
+/* Back button */
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 0;
+    margin-bottom: 0;
+    transition: opacity 0.2s ease;
+}
+
+.back-btn:hover {
+    opacity: 0.8;
+}
+
+/* Password field with eye toggle */
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-field input {
+    width: 100%;
+    padding-right: 42px;
+}
+
+.eye-toggle {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: #999;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.eye-toggle:hover {
+    color: var(--ion-color-primary);
+}
+
+/* Inline field errors */
+.inline-error {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--ion-color-danger, #e53e3e);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 4px;
 }

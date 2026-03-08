@@ -68,7 +68,14 @@
   justify-content: center;
   color: white;
   font-weight: bold;
-  font-size: 1.2rem;
+  overflow: hidden;
+}
+
+.avatar-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .user-details {

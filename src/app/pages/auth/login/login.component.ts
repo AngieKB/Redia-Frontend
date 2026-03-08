@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core'
+import { Component, ChangeDetectorRef, OnInit, NgZone } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterLink } from '@angular/router'
@@ -10,6 +10,8 @@ import { FooterComponent } from '../../../shared/footer/footer.component'
 import { AuthResponse } from '../../../models/auth.model'
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha'
 
+declare var google: any;
+
 @Component({
     selector: 'app-login',
     standalone: true,
@@ -17,7 +19,7 @@ import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha'
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
     email = ''
     password = ''
@@ -27,15 +29,65 @@ export class LoginComponent {
         email: '',
         password: ''
     }
-    recaptchaToken: string | null = null;
-    recaptchaError = '';
 
     constructor(
         private authService: AuthService,
         private router: Router,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private ngZone: NgZone
     ) { }
+
+    ngOnInit() {
+        this.initializeGoogleSignIn();
+    }
+
+    initializeGoogleSignIn() {
+        if (typeof google === 'undefined') {
+            setTimeout(() => this.initializeGoogleSignIn(), 100);
+            return;
+        }
+
+        google.accounts.id.initialize({
+            client_id: '115728163825-koff0lsutk5h271dlck8s23rnt37sq42.apps.googleusercontent.com',
+            callback: this.handleGoogleCredentialResponse.bind(this)
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById("google-buttonDiv"),
+            { theme: "outline", size: "large", width: "100%", text: "continue_with" }
+        );
+    }
+
+    handleGoogleCredentialResponse(response: any) {
+        if (response.credential) {
+            this.ngZone.run(() => {
+                this.authService.googleLogin(response.credential).subscribe({
+                    next: (res: AuthResponse) => {
+                        localStorage.setItem('accessToken', res.accessToken)
+                        localStorage.setItem('refreshToken', res.refreshToken)
+                        localStorage.setItem('role', res.role)
+                        localStorage.setItem('email', res.email)
+                        if (res.nombre) localStorage.setItem('nombre', res.nombre)
+                        if (res.telefono) localStorage.setItem('telefono', res.telefono)
+                        if (res.fotoUrl) localStorage.setItem('fotoUrl', res.fotoUrl)
+
+                        if (res.role === 'ADMINISTRADOR') {
+                            this.router.navigate(['/admin/dashboard'])
+                        } else if (res.role === 'RECEPCIONISTA') {
+                            this.router.navigate(['/recepcionista/dashboard'])
+                        } else {
+                            this.router.navigate(['/cliente/my-reservations'])
+                        }
+                    },
+                    error: (err) => {
+                        this.errorMessage = this.getBackendError(err, 'Error con el inicio de sesión de Google. Inténtalo de nuevo.');
+                        this.cdr.detectChanges();
+                    }
+                });
+            });
+        }
+    }
 
     togglePasswordVisibility() {
         this.showPassword = !this.showPassword;
@@ -43,15 +95,9 @@ export class LoginComponent {
 
     login() {
         this.errorMessage = ''
-        this.recaptchaError = ''
         this.errors = { email: '', password: '' }
 
         let hasError = false;
-
-        if (!this.recaptchaToken) {
-            this.recaptchaError = 'Por favor, resuelve el reCAPTCHA.';
-            hasError = true;
-        }
 
         if (!this.email.trim()) {
             this.errors.email = 'El correo electrónico es requerido.'
@@ -69,8 +115,7 @@ export class LoginComponent {
 
         const data = {
             email: this.email,
-            password: this.password,
-            recaptchaToken: this.recaptchaToken as string
+            password: this.password
         }
 
         this.authService.login(data).subscribe({
@@ -80,13 +125,16 @@ export class LoginComponent {
                 localStorage.setItem('refreshToken', res.refreshToken)
                 localStorage.setItem('role', res.role)
                 localStorage.setItem('email', res.email)
+                if (res.nombre) localStorage.setItem('nombre', res.nombre)
+                if (res.telefono) localStorage.setItem('telefono', res.telefono)
+                if (res.fotoUrl) localStorage.setItem('fotoUrl', res.fotoUrl)
 
                 if (res.role === 'ADMINISTRADOR') {
                     this.router.navigate(['/admin/dashboard'])
                 } else if (res.role === 'RECEPCIONISTA') {
                     this.router.navigate(['/recepcionista/dashboard'])
                 } else {
-                    this.router.navigate(['/dashboard'])
+                    this.router.navigate(['/cliente/my-reservations'])
                 }
 
             },
@@ -109,11 +157,6 @@ export class LoginComponent {
         })
     }
 
-    onCaptchaResolved(captchaResponse: string | null) {
-        this.recaptchaToken = captchaResponse;
-        this.recaptchaError = '';
-    }
-
     private getBackendError(err: any, fallback: string): string {
         if (err.status === 0) return 'No se pudo conectar con el servidor. Verifica que el Backend esté encendido.'
 
@@ -122,7 +165,14 @@ export class LoginComponent {
         }
 
         if (err.error?.message) return err.error.message
-        if (err.error && typeof err.error === 'string') return err.error
+        if (err.error && typeof err.error === 'string') {
+            try {
+                const parsed = JSON.parse(err.error);
+                if (parsed.message) return parsed.message;
+            } catch (e) {
+                return err.error;
+            }
+        }
 
         return fallback
     }

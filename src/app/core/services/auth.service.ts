@@ -45,11 +45,15 @@ export class AuthService {
     login(data: {
         email: string
         password: string
-        recaptchaToken: string
     }): Observable<AuthResponse> {
 
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data)
 
+    }
+
+    // Iniciar sesión con Google
+    googleLogin(token: string): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/google`, { token })
     }
 
     // Recuperar contraseña
@@ -63,8 +67,10 @@ export class AuthService {
     }
 
     // Solicitar código de restablecimiento
-    requestPasswordReset(email: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/request-password-reset`, { email })
+    requestPasswordReset(email: string, recaptchaToken: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/forgot-password`, { email, recaptchaToken }, {
+            responseType: 'text' as 'json'
+        })
     }
 
     // Restablecer contraseña con código
@@ -73,7 +79,18 @@ export class AuthService {
         verificationCode: string
         newPassword: string
     }): Observable<any> {
-        return this.http.post(`${this.apiUrl}/reset-password`, data)
+        return this.http.post(`${this.apiUrl}/reset-password`, data, {
+            responseType: 'text' as 'json'
+        })
+    }
+
+    // Cambiar contraseña (usuario autenticado)
+    changePassword(data: { oldPassword: string; newPassword: string }): Observable<any> {
+        const token = localStorage.getItem('accessToken');
+        return this.http.post(`${this.apiUrl}/change-password`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: 'text' as 'json'
+        })
     }
 
     // Actualizar contraseña

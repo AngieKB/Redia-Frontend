@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Location } from '@angular/common';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { AlertService } from '../../core/services/alert.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -15,6 +18,11 @@ import { FooterComponent } from '../../shared/footer/footer.component';
 export class ProfilePage implements OnInit {
   editMode = false;
   passwordMode = false;
+  savingPassword = false;
+
+  showPasswordActual = false;
+  showPasswordNueva = false;
+  showPasswordConfirmar = false;
 
   user = {
     nombre: '',
@@ -25,6 +33,28 @@ export class ProfilePage implements OnInit {
   };
 
   editUser = { ...this.user };
+  newFotoFile: File | null = null;
+  newFotoPreview: string = '';
+
+  editErrors = {
+    nombre: '',
+    telefono: ''
+  };
+
+  passwords = { actual: '', nueva: '', confirmar: '' };
+
+  passwordErrors = {
+    actual: '',
+    nueva: '',
+    confirmar: ''
+  };
+
+  constructor(
+    private location: Location,
+    private alertService: AlertService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.user.nombre = localStorage.getItem('nombre') || '';
@@ -35,25 +65,90 @@ export class ProfilePage implements OnInit {
     this.editUser = { ...this.user };
   }
 
-  passwords = { actual: '', nueva: '', confirmar: '' };
+  goBack() {
+    this.location.back();
+  }
 
   editarDatos() {
     this.editUser = { ...this.user };
+    this.editErrors = { nombre: '', telefono: '' };
+    this.newFotoFile = null;
+    this.newFotoPreview = '';
     this.editMode = true;
     this.passwordMode = false;
   }
 
   cancelarEdicion() {
     this.editMode = false;
+    this.newFotoFile = null;
+    this.newFotoPreview = '';
+  }
+
+  soloNumeros(event: KeyboardEvent): boolean {
+    const char = event.key;
+    if (char.length > 1) return true;
+    return /[0-9]/.test(char);
+  }
+
+  pegadoNumeros(event: ClipboardEvent) {
+    const texto = event.clipboardData?.getData('text') ?? '';
+    if (!/^\d+$/.test(texto)) {
+      event.preventDefault();
+    }
+  }
+
+  onFotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.newFotoFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.newFotoPreview = e.target?.result as string;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(this.newFotoFile);
+    }
   }
 
   guardarCambios() {
+    this.editErrors = { nombre: '', telefono: '' };
+    let hasError = false;
+
+    if (!this.editUser.nombre.trim()) {
+      this.editErrors.nombre = 'El nombre es requerido.';
+      hasError = true;
+    }
+
+    if (!this.editUser.telefono.trim()) {
+      this.editErrors.telefono = 'El teléfono es requerido.';
+      hasError = true;
+    } else if (!/^\d{10}$/.test(this.editUser.telefono.trim())) {
+      this.editErrors.telefono = 'El teléfono debe tener exactamente 10 dígitos.';
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     this.user = { ...this.editUser };
+    localStorage.setItem('nombre', this.user.nombre);
+    localStorage.setItem('telefono', this.user.telefono);
+
+    // If a new photo was selected, save it as base64 (preview) locally.
+    // In a full implementation this would upload to the backend.
+    if (this.newFotoPreview) {
+      this.user.fotoUrl = this.newFotoPreview;
+      localStorage.setItem('fotoUrl', this.newFotoPreview);
+    }
+
+    this.alertService.success('Datos actualizados correctamente.');
     this.editMode = false;
+    this.newFotoFile = null;
+    this.newFotoPreview = '';
   }
 
   cambiarContrasena() {
     this.passwords = { actual: '', nueva: '', confirmar: '' };
+    this.passwordErrors = { actual: '', nueva: '', confirmar: '' };
     this.passwordMode = true;
     this.editMode = false;
   }
@@ -62,12 +157,76 @@ export class ProfilePage implements OnInit {
     this.passwordMode = false;
   }
 
+  isPasswordValid(password: string): boolean {
+    const regex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/;
+    return password.length >= 8 && regex.test(password);
+  }
+
   guardarContrasena() {
-    if (this.passwords.nueva !== this.passwords.confirmar) {
-      alert('Las contraseñas no coinciden');
-      return;
+    this.passwordErrors = { actual: '', nueva: '', confirmar: '' };
+    let hasError = false;
+
+    if (!this.passwords.actual) {
+      this.passwordErrors.actual = 'La contraseña actual es requerida.';
+      hasError = true;
     }
-    console.log('Contraseña actualizada');
-    this.passwordMode = false;
+
+    if (!this.passwords.nueva) {
+      this.passwordErrors.nueva = 'La nueva contraseña es requerida.';
+      hasError = true;
+    } else if (!this.isPasswordValid(this.passwords.nueva)) {
+      this.passwordErrors.nueva = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.';
+      hasError = true;
+    } else if (this.passwords.nueva === this.passwords.actual) {
+      this.passwordErrors.nueva = 'La nueva contraseña no puede ser igual a la contraseña actual.';
+      hasError = true;
+    }
+
+    if (this.passwords.nueva && this.passwords.confirmar && this.passwords.nueva !== this.passwords.confirmar) {
+      this.passwordErrors.confirmar = 'Las contraseñas no coinciden.';
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    this.savingPassword = true;
+
+    this.authService.changePassword({
+      oldPassword: this.passwords.actual,
+      newPassword: this.passwords.nueva
+    }).subscribe({
+      next: () => {
+        this.savingPassword = false;
+        this.alertService.success('Contraseña actualizada correctamente.');
+        this.passwordMode = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.savingPassword = false;
+        const msg = this.getBackendError(err, 'Error al cambiar la contraseña.');
+        const msgLower = msg.toLowerCase();
+        if (msgLower.includes('actual') || msgLower.includes('antigua') || msgLower.includes('incorrecta') || msgLower.includes('wrong') || msgLower.includes('old')) {
+          this.passwordErrors.actual = msg;
+        } else {
+          this.passwordErrors.nueva = msg;
+        }
+        this.cdr.detectChanges();
+        console.error(err);
+      }
+    });
+  }
+
+  private getBackendError(err: any, fallback: string): string {
+    if (err.status === 0) return 'No se pudo conectar con el servidor.';
+    if (err.error?.message) return err.error.message;
+    if (err.error && typeof err.error === 'string') {
+      try {
+        const parsed = JSON.parse(err.error);
+        if (parsed.message) return parsed.message;
+      } catch (e) {
+        return err.error;
+      }
+    }
+    return fallback;
   }
 }

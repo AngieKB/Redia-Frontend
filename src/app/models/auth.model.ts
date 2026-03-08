@@ -17,6 +17,9 @@ export interface AuthResponse {
     refreshToken: string
     email: string
     role: string
+    nombre: string
+    telefono: string
+    fotoUrl: string
 }
 
 export interface RefreshTokenRequest {

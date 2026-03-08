@@ -13,8 +13,9 @@ export class ProfileComponent {
   userName = 'John Doe';
   userRole = 'CLIENTE';
   isLoggedIn = false;
+  isDropdownOpen = false;
 
-  constructor() { 
+  constructor() {
     this.checkAuthStatus();
   }
 
@@ -24,6 +25,12 @@ export class ProfileComponent {
     this.isLoggedIn = !!token;
     if (role) {
       this.userRole = role;
+    }
+  }
+
+  toggleDropdown() {
+    if (this.isLoggedIn) {
+      this.isDropdownOpen = !this.isDropdownOpen;
     }
   }
 

@@ -5,7 +5,7 @@
   </div>
 
   <div class="profile-dropdown">
-    <div class="profile-info">
+    <div class="profile-info" (click)="toggleDropdown()">
       <div class="avatar">
         <span class="avatar-text">
           <ng-container *ngIf="isLoggedIn">{{ userName.charAt(0).toUpperCase() }}</ng-container>
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="dropdown-menu">
+    <div class="dropdown-menu" [class.show]="isDropdownOpen">
       <div class="dropdown-header" style="padding: 1rem; border-bottom: 1px solid var(--ion-color-light);">
         <p style="margin: 0; font-weight: bold; color: var(--ion-color-primary);">{{ isLoggedIn ? userName : 'Invitado'
           }}</p>

@@ -103,7 +103,7 @@
   margin-top: 0.5rem;
 }
 
-.profile-dropdown:hover .dropdown-menu {
+.dropdown-menu.show {
   display: flex;
 }
 

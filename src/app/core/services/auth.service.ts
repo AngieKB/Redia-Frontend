@@ -19,6 +19,7 @@ export class AuthService {
         telefono: string
         password: string
         role: string
+        recaptchaToken: string
         fotoUrl?: File
     }): Observable<any> {
 
@@ -29,6 +30,7 @@ export class AuthService {
         formData.append('telefono', data.telefono)
         formData.append('password', data.password)
         formData.append('role', data.role)
+        formData.append('recaptchaToken', data.recaptchaToken)
 
         if (data.fotoUrl) {
             formData.append('fotoUrl', data.fotoUrl)
@@ -43,6 +45,7 @@ export class AuthService {
     login(data: {
         email: string
         password: string
+        recaptchaToken: string
     }): Observable<AuthResponse> {
 
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data)
@@ -67,7 +70,7 @@ export class AuthService {
     // Restablecer contraseña con código
     resetPassword(data: {
         email: string
-        code: string
+        verificationCode: string
         newPassword: string
     }): Observable<any> {
         return this.http.post(`${this.apiUrl}/reset-password`, data)

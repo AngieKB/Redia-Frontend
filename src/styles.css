@@ -29,6 +29,7 @@
   --ion-item-background: #ffffff;
 
   --ion-font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
+  --a11y-font-multiplier: 1;
 }
 
 /* Global styles */
@@ -42,6 +43,43 @@ body {
   background-color: var(--ion-background-color);
   color: var(--ion-text-color);
   min-height: 100vh;
+  font-size: calc(16px * var(--a11y-font-multiplier));
+}
+
+/* Accessibility Modes */
+body.a11y-high-contrast {
+  --ion-color-primary: #FFFF00;
+  --ion-color-primary-contrast: #000000;
+  --ion-color-secondary: #00FFFF;
+  --ion-color-secondary-contrast: #000000;
+  --ion-background-color: #000000;
+  --ion-text-color: #FFFFFF;
+  --ion-card-background: #000000;
+  --ion-item-background: #000000;
+
+  /* Override borders globally for high contrast */
+  button,
+  input,
+  select,
+  .card,
+  .profile-dropdown .dropdown-menu {
+    border: 2px solid #FFFF00 !important;
+  }
+}
+
+body.a11y-grayscale {
+  filter: grayscale(100%);
+}
+
+body.a11y-dark {
+  --ion-color-primary: #a86fa0;
+  --ion-color-secondary: #c08090;
+  --ion-background-color: #121212;
+  --ion-text-color: #e0e0e0;
+  --ion-card-background: #1e1e1e;
+  --ion-item-background: #1e1e1e;
+  --ion-color-light: #2c2c2c;
+  --ion-color-medium: #999999;
 }
 
 input {

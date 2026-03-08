@@ -1,55 +1,83 @@
 <app-navbar></app-navbar>
 
-<div class="page-container">
-    <div class="page-header">
-        <div class="header-inner">
-            <div>
-                <h1 class="page-title">Nueva Reserva</h1>
-                <p class="page-subtitle">Completa los datos para reservar tu mesa</p>
-            </div>
+<div class="page-container"
+    style="background: var(--ion-background-color); min-height: calc(100vh - 60px); padding: 0;">
+
+    <div class="page-header"
+        style="background: var(--ion-color-secondary); padding: 2rem 1.5rem; color: white; display: flex; justify-content: space-between; align-items: center; border-radius: 0;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem; font-weight: bold;">Nueva Reserva</h1>
+            <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.9rem;">Prepara tu mesa con nosotros</p>
         </div>
     </div>
 
-    <div class="page-content">
-        <div class="form-card">
-            <form class="reservation-form" (ngSubmit)="onSubmit()" #reservationForm="ngForm">
+    <div class="page-content" style="padding: 2rem 1.5rem;">
 
-                <div class="form-group">
-                    <label for="fecha">Fecha</label>
-                    <input id="fecha" type="date" name="fecha" [(ngModel)]="reservation.fecha" required />
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="horaEntrada">Hora de Entrada</label>
-                        <input id="horaEntrada" type="time" name="horaEntrada" [(ngModel)]="reservation.horaEntrada"
-                            (change)="onHoraEntradaChange()" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="horaSalida">Hora de Salida</label>
-                        <input id="horaSalida" type="time" name="horaSalida" [(ngModel)]="reservation.horaSalida"
-                            required />
-                        <span class="field-hint">Máximo 2 horas después de la entrada</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="personas">Número de Personas</label>
-                    <input id="personas" type="number" name="personas" [(ngModel)]="reservation.personas" min="1"
-                        max="20" placeholder="Ej: 4" required />
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" routerLink="/dashboard">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn-primary" [disabled]="reservationForm.invalid">
-                        Crear Reserva
-                    </button>
-                </div>
-
-            </form>
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="color: var(--ion-color-secondary); font-weight: bold; margin: 0; font-size: 24px;">Preparar tu
+                mesa</h2>
+            <p style="color: var(--ion-text-color); margin-top: 5px;">Selecciona los detalles de tu reserva.</p>
         </div>
+
+        <form (ngSubmit)="onSubmit()" #reserveForm="ngForm">
+
+            <div class="custom-item">
+                <label>Número de Personas</label>
+                <select [(ngModel)]="reservation.personas" name="personas" required>
+                    <option value="" disabled selected>Selecciona cantidad</option>
+                    <option [value]="1">1 Persona</option>
+                    <option [value]="2">2 Personas</option>
+                    <option [value]="3">3 Personas</option>
+                    <option [value]="4">4 Personas</option>
+                    <option [value]="5">5 Personas</option>
+                    <option [value]="6">6 Personas</option>
+                    <option [value]="7">7 Personas</option>
+                    <option [value]="8">8 Personas</option>
+                </select>
+            </div>
+
+            <div class="custom-item">
+                <label>Fecha de la Reserva</label>
+                <input type="date" [(ngModel)]="reservation.fecha" name="fecha" [min]="minDate" required>
+            </div>
+
+            <div class="custom-item">
+                <label>Hora de Entrada</label>
+                <input type="time" [(ngModel)]="reservation.horaEntrada" name="horaEntrada"
+                    (change)="onHoraEntradaChange()" required>
+            </div>
+
+            <div class="custom-item">
+                <label>Hora de Salida Estimada</label>
+                <input type="time" [(ngModel)]="reservation.horaSalida" name="horaSalida" required>
+                <div class="hint">Máximo 2 horas después de la entrada</div>
+            </div>
+
+            <div class="custom-item" style="margin-bottom: 2rem;">
+                <label>Ocasión Especial (Opcional)</label>
+                <select [(ngModel)]="reservation.ocasion" name="ocasion">
+                    <option value="" selected>Ninguna</option>
+                    <option value="cumpleanos">Cumpleaños</option>
+                    <option value="aniversario">Aniversario</option>
+                    <option value="negocios">Reunión de Negocios</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn" [disabled]="reserveForm.invalid">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-right: 10px;">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Confirmar Reserva
+            </button>
+
+            <button type="button" class="cancel-btn" routerLink="/cliente/my-reservations">
+                Volver a Mis Reservas
+            </button>
+
+        </form>
     </div>
 </div>
 

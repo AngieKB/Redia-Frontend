@@ -10,8 +10,8 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent {
-  userName = 'John Doe';
-  userRole = 'CLIENTE';
+  userName = '';
+  userRole = '';
   isLoggedIn = false;
   isDropdownOpen = false;
 
@@ -22,16 +22,18 @@ export class ProfileComponent {
   checkAuthStatus() {
     const token = localStorage.getItem('accessToken');
     const role = localStorage.getItem('role');
+    const nombre = localStorage.getItem('nombre');
     this.isLoggedIn = !!token;
     if (role) {
       this.userRole = role;
     }
+    if (nombre) {
+      this.userName = nombre;
+    }
   }
 
   toggleDropdown() {
-    if (this.isLoggedIn) {
-      this.isDropdownOpen = !this.isDropdownOpen;
-    }
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
 
   logout() {

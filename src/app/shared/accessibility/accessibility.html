@@ -1,0 +1,83 @@
+<!-- Floating Button -->
+<button class="a11y-fab" (click)="togglePanel()" aria-label="Abrir opciones de accesibilidad">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 16v-4"></path>
+        <path d="M12 8h.01"></path>
+    </svg>
+</button>
+
+<!-- Backdrop overlay -->
+<div class="a11y-backdrop" *ngIf="isOpen" (click)="togglePanel()"></div>
+
+<!-- Side Panel -->
+<div class="a11y-panel" [class.open]="isOpen">
+    <div class="panel-header">
+        <h3>Accesibilidad</h3>
+        <button class="close-btn" (click)="togglePanel()" aria-label="Cerrar panel">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <div class="panel-content">
+        <div class="a11y-section">
+            <h4>Opciones de Visualización</h4>
+
+            <button class="a11y-option" [class.active]="highContrast" (click)="toggleHighContrast()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 18a6 6 0 0 0 0-12v12z"></path>
+                </svg>
+                <span>Alto Contraste</span>
+            </button>
+
+            <button class="a11y-option" [class.active]="grayscale" (click)="toggleGrayscale()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                    <line x1="7" y1="2" x2="7" y2="22"></line>
+                    <line x1="11" y1="2" x2="11" y2="22"></line>
+                    <line x1="15" y1="2" x2="15" y2="22"></line>
+                    <line x1="19" y1="2" x2="19" y2="22"></line>
+                </svg>
+                <span>Escala de Grises</span>
+            </button>
+
+            <button class="a11y-option" [class.active]="darkMode" (click)="toggleDarkMode()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <span>{{ darkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
+            </button>
+        </div>
+
+        <div class="a11y-section">
+            <h4>Tamaño del Texto</h4>
+            <div class="font-size-controls">
+                <button class="font-btn" (click)="changeFontSize(-0.1)" [disabled]="fontSizeMultiplier <= 0.8"
+                    aria-label="Reducir texto">A-</button>
+                <span class="font-indicator">{{ (fontSizeMultiplier * 100).toFixed(0) }}%</span>
+                <button class="font-btn" (click)="changeFontSize(0.1)" [disabled]="fontSizeMultiplier >= 2.0"
+                    aria-label="Aumentar texto">A+</button>
+            </div>
+        </div>
+
+        <div class="a11y-actions">
+            <button class="btn-reset" (click)="resetSettings()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                Restablecer
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,43 +1,71 @@
 <app-navbar></app-navbar>
 
-<div class="page-container">
-    <div class="page-header">
-        <div class="header-inner">
-            <div>
-                <h1 class="page-title">Mis Reservas</h1>
-                <p class="page-subtitle">Historial y estado de tus reservas</p>
-            </div>
-            <button class="btn-primary" routerLink="/cliente/create-reservation">
-                ➕ Nueva Reserva
-            </button>
+<div class="page-container"
+    style="background: var(--ion-background-color); min-height: calc(100vh - 60px); padding: 0;">
+
+    <div class="page-header"
+        style="background: var(--ion-color-secondary); padding: 2rem 1.5rem; color: white; display: flex; justify-content: space-between; align-items: center; border-radius: 0;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem; font-weight: bold;">Mis Reservas</h1>
+            <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.9rem;">Historial y estado de tus reservas</p>
+        </div>
+        <button class="btn-primary"
+            style="background: transparent; border: 1px solid white; border-radius: 20px; padding: 8px 16px;"
+            routerLink="/cliente/create-reservation">
+            ➕ Nueva
+        </button>
+    </div>
+
+    <div class="segment-container" style="padding: 1rem; background: var(--ion-background-color);">
+        <div class="custom-segment"
+            style="display: flex; overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 4px; gap: 4px;">
+            <button class="segment-btn" [class.active]="filterStatus === 'SOLICITADA'"
+                (click)="setFilter('SOLICITADA')">Solicitadas</button>
+            <button class="segment-btn" [class.active]="filterStatus === 'CONFIRMADA'"
+                (click)="setFilter('CONFIRMADA')">Confirmadas</button>
+            <button class="segment-btn" [class.active]="filterStatus === 'FINALIZADA'"
+                (click)="setFilter('FINALIZADA')">Finalizadas</button>
+            <button class="segment-btn" [class.active]="filterStatus === 'CANCELADA'"
+                (click)="setFilter('CANCELADA')">Canceladas</button>
+            <button class="segment-btn" [class.active]="filterStatus === 'RECHAZADA'"
+                (click)="setFilter('RECHAZADA')">Rechazadas</button>
         </div>
     </div>
 
-    <div class="page-content">
+    <div class="page-content" style="padding: 0 1rem 2rem 1rem;">
         <!-- Empty state -->
-        <div class="empty-state" *ngIf="reservations.length === 0">
-            <p>Aún no tienes reservas</p>
-            <button class="btn-primary" routerLink="/cliente/create-reservation">Crear mi primera reserva</button>
+        <div class="empty-state" *ngIf="filteredReservations.length === 0"
+            style="text-align: center; margin-top: 3rem; color: var(--ion-text-color);">
+            <p>No tienes reservas en esta categoría.</p>
         </div>
 
         <!-- Reservations list -->
-        <div class="reservations-list" *ngIf="reservations.length > 0">
-            <div class="reservation-card" *ngFor="let r of reservations">
-                <div class="res-main">
-                    <div class="res-date">
-                        <span class="date-day">{{ r.fecha | date:'d' }}</span>
-                        <span class="date-month">{{ r.fecha | date:'MMM' }}</span>
-                    </div>
-                    <div class="res-info">
-                        <div class="res-time">{{ r.horaEntrada }} – {{ r.horaSalida }}</div>
-                        <div class="res-people">{{ r.personas }} personas</div>
+        <div class="reservations-list" *ngIf="filteredReservations.length > 0">
+            <div class="reservation-card" *ngFor="let r of filteredReservations"
+                style="background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div class="res-main" style="display: flex; align-items: flex-start; justify-content: space-between;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div
+                            style="background: var(--ion-color-secondary); color: white; border-radius: 8px; text-align: center; width: 60px; height: 60px; display: flex; flex-direction: column; justify-content: center;">
+                            <span style="font-size: 1.2rem; font-weight: bold;">{{ r.fecha | date:'d' }}</span>
+                            <span style="font-size: 0.8rem; text-transform: uppercase;">{{ r.fecha | date:'MMM'
+                                }}</span>
+                        </div>
+                        <div style="display: flex; flexDirection: column; justify-content: center;">
+                            <h3
+                                style="margin: 0 0 5px; font-weight: bold; color: var(--ion-color-tertiary); font-size: 1.1rem;">
+                                {{ r.fecha | date:'HH:mm' }}</h3>
+                            <p style="margin: 0; color: var(--ion-text-color); font-size: 0.9rem;">{{ r.numeroPersonas
+                                }} personas</p>
+                        </div>
                     </div>
                 </div>
-                <div class="res-footer">
-                    <span class="status-badge" [ngClass]="'status-' + r.estado">{{ r.estado }}</span>
-                    <div class="res-actions">
-                        <button class="btn-cancel-res" (click)="cancelarReserva(r)"
-                            [disabled]="r.estado === 'cancelada' || r.estado === 'finalizada'">
+                <div class="res-footer"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid #f0f0f0; padding-top: 1rem;">
+                    <span class="status-badge" [ngClass]="getColorStatus(r.estado)">{{ r.estado }}</span>
+                    <div class="res-actions" *ngIf="r.estado === 'SOLICITADA' || r.estado === 'CONFIRMADA'">
+                        <button class="btn-cancel-res" (click)="cancelarReserva(r.id)"
+                            style="border: 1px solid var(--ion-color-danger); color: var(--ion-color-danger); background: transparent; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer;">
                             Cancelar
                         </button>
                     </div>

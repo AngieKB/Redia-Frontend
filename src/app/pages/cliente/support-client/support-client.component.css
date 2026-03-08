@@ -1,0 +1,120 @@
+.support-container {
+    padding: 20px;
+    background: var(--ion-background-color);
+    min-height: calc(100vh - 60px);
+}
+
+.header-section {
+    text-align: center;
+    margin: 1rem 0 2rem 0;
+}
+
+.icon-wrapper {
+    color: var(--ion-color-secondary);
+    margin-bottom: 10px;
+}
+
+.header-section h2 {
+    color: var(--ion-color-primary);
+    font-weight: bold;
+    margin: 0;
+    font-size: 24px;
+}
+
+.header-section p {
+    color: var(--ion-text-color);
+    margin-top: 5px;
+}
+
+.support-card {
+    background: var(--ion-card-background, #fff);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin: 0 0 2rem 0;
+    overflow: hidden;
+}
+
+.support-card.mb-large {
+    margin-bottom: 3rem;
+}
+
+.card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-header h3 {
+    color: var(--ion-color-primary);
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    color: var(--ion-text-color);
+}
+
+.contact-icon {
+    color: var(--ion-color-secondary);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background-color: var(--ion-item-background, #f5f5f5);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ion-text-color);
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--ion-color-primary);
+}
+
+.send-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background-color: var(--ion-color-secondary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.send-button:active {
+    transform: translateY(2px);
+}

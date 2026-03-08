@@ -16,6 +16,7 @@ import { Reservations as RecepcionistaReservations } from './pages/recepcionista
 
 import { CreateReservation } from './pages/cliente/create-reservation/create-reservation.component'
 import { MyReservations } from './pages/cliente/my-reservations/my-reservations.component'
+import { SupportClientComponent } from './pages/cliente/support-client/support-client.component'
 
 import { ProfilePage } from './pages/profile/profile-page.component'
 import { SettingsPage } from './pages/settings/settings-page'
@@ -80,6 +81,10 @@ export const routes: Routes = [
     {
         path: 'cliente/my-reservations',
         component: MyReservations
+    },
+    {
+        path: 'cliente/support',
+        component: SupportClientComponent
     },
 
     {

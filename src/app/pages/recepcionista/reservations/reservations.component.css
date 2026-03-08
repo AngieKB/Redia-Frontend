@@ -1,1 +1,68 @@
-@import url('../../../shared/pages.shared.css');
+@import '../../../shared/pages.shared.css';
+
+.filters-card {
+    background: var(--ion-card-background);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(97, 45, 83, 0.08);
+    margin-bottom: 24px;
+}
+
+.filters-title {
+    margin: 0 0 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+}
+
+.filter-input {
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    background: var(--ion-background-color);
+    color: var(--ion-text-color);
+    width: 100%;
+    margin: 0;
+    transition: border-color 0.3s;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: var(--ion-color-primary);
+}
+
+.btn-clear {
+    padding: 9px 20px;
+    background: transparent;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-clear:hover {
+    border-color: #e53935;
+    color: #e53935;
+}

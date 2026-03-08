@@ -1,0 +1,215 @@
+/* Floating Action Button */
+.a11y-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ion-color-secondary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 9999;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+}
+
+.a11y-fab:hover {
+    transform: scale(1.1);
+    background: var(--ion-color-primary);
+}
+
+.a11y-fab:active {
+    transform: scale(0.95);
+}
+
+/* Backdrop */
+.a11y-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+}
+
+/* Side Panel */
+.a11y-panel {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100vh;
+    background: var(--ion-background-color, #ffffff);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.a11y-panel.open {
+    right: 0;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--ion-color-light);
+    background: var(--ion-color-primary);
+    color: white;
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.panel-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.a11y-section {
+    margin-bottom: 2rem;
+}
+
+.a11y-section h4 {
+    font-size: 0.95rem;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+/* Options */
+.a11y-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--ion-color-light);
+    background: transparent;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--ion-text-color);
+    font-weight: 500;
+}
+
+.a11y-option:hover {
+    border-color: var(--ion-color-secondary);
+    background: rgba(var(--ion-color-secondary-rgb), 0.05);
+}
+
+.a11y-option.active {
+    background: var(--ion-color-primary);
+    color: white;
+    border-color: var(--ion-color-primary);
+}
+
+/* Font Size Controls */
+.font-size-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ion-color-light);
+    border-radius: 12px;
+    padding: 0.5rem;
+}
+
+.font-btn {
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--ion-color-primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+.font-btn:hover:not(:disabled) {
+    background: var(--ion-color-primary);
+    color: white;
+}
+
+.font-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.font-indicator {
+    font-weight: 600;
+    color: var(--ion-text-color);
+}
+
+/* Reset Button */
+.a11y-actions {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ion-color-light);
+}
+
+.btn-reset {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--ion-color-medium);
+    color: var(--ion-color-medium);
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-reset:hover {
+    background: var(--ion-color-light);
+    color: var(--ion-text-color);
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .a11y-panel {
+        width: 85vw;
+        right: -85vw;
+    }
+}

@@ -1,1 +1,71 @@
 @import url('../../../shared/pages.shared.css');
+
+.custom-segment {
+    display: flex;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 4px;
+    gap: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.custom-segment::-webkit-scrollbar {
+    display: none;
+}
+
+.segment-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ion-text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.segment-btn.active {
+    background: var(--ion-color-primary, #612D53);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.status-solicitada {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-confirmada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-rechazada {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.status-finalizada {
+    background: #e2e3e5;
+    color: #6c757d;
+}

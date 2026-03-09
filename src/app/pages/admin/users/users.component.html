@@ -3,11 +3,18 @@
 <div class="page-container">
     <div class="page-header">
         <div class="header-inner">
-            <div>
-                <h1 class="page-title">Gestión de Usuarios</h1>
-                <p class="page-subtitle">Administra los usuarios del sistema</p>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="back-button" routerLink="/admin/dashboard" title="Volver al panel"
+                    style="background: transparent; border: none; font-size: 24px; cursor: pointer; color: white;">
+                    &#8592;
+                </button>
+                <div>
+                    <h1 class="page-title">Gestión de Usuarios</h1>
+                    <p class="page-subtitle">Administra los usuarios del sistema</p>
+                </div>
             </div>
-            <button class="btn-primary" (click)="abrirModalCrear()">
+            <button class="btn-primary" (click)="abrirModalCrear()"
+                style="background: white; color: var(--ion-color-secondary); border: none; font-weight: bold;">
                 ➕ Crear Usuario
             </button>
         </div>
@@ -19,10 +26,10 @@
 
         <!-- Filters -->
         <div class="filters-bar">
-            <input type="text" placeholder="🔍 Buscar por nombre o email..." class="search-input" />
-            <select class="filter-select">
+            <input type="text" [(ngModel)]="searchTerm" placeholder="🔍 Buscar por nombre o email..."
+                class="search-input" />
+            <select class="filter-select" [(ngModel)]="selectedRole">
                 <option value="">Todos los roles</option>
-                <option value="ADMINISTRADOR">Admin</option>
                 <option value="RECEPCIONISTA">Recepcionista</option>
                 <option value="CLIENTE">Cliente</option>
             </select>
@@ -43,7 +50,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let user of users">
+                    <tr *ngFor="let user of filteredUsers">
                         <td>
                             <div class="user-name-cell">
                                 <div class="user-avatar">{{ user.nombre.charAt(0) | uppercase }}</div>
@@ -62,8 +69,11 @@
                             </div>
                         </td>
                     </tr>
-                    <tr *ngIf="users.length === 0">
+                    <tr *ngIf="users.length === 0 && !isLoading">
                         <td colspan="5" class="empty-row">No hay usuarios registrados</td>
+                    </tr>
+                    <tr *ngIf="filteredUsers.length === 0 && users.length > 0 && !isLoading">
+                        <td colspan="5" class="empty-row">No se encontraron usuarios para este filtro</td>
                     </tr>
                 </tbody>
             </table>
@@ -82,30 +92,107 @@
                     <label>Nombre</label>
                     <input type="text" [(ngModel)]="currentUser.nombre" name="nombre" placeholder="Nombre completo"
                         required />
+                    <div *ngIf="errors['nombre']" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors['nombre'] }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" [(ngModel)]="currentUser.email" name="email" placeholder="correo@ejemplo.com"
                         required />
+                    <div *ngIf="errors['email']" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors['email'] }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" [(ngModel)]="currentUser.password" name="password"
-                        placeholder="Contraseña de acceso" required />
+                    <div class="password-group">
+                        <input type="{{ showPassword ? 'text' : 'password' }}" [(ngModel)]="currentUser.password"
+                            name="password" placeholder="Mínimo 8 caracteres" required />
+                        <span class="toggle-password-icon" (click)="togglePassword()">
+                            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                                </path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </span>
+                    </div>
+                    <div *ngIf="errors['password']" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors['password'] }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Teléfono</label>
                     <input type="tel" [(ngModel)]="currentUser.telefono" name="telefono"
                         placeholder="+57 300 000 0000" />
+                    <div *ngIf="errors['telefono']" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors['telefono'] }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Rol</label>
                     <select [(ngModel)]="currentUser.role" name="role" required>
                         <option value="">Seleccionar rol</option>
-                        <option value="ADMINISTRADOR">Admin</option>
                         <option value="RECEPCIONISTA">Recepcionista</option>
                         <option value="CLIENTE">Cliente</option>
                     </select>
+                    <div *ngIf="errors['role']" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors['role'] }}
+                    </div>
+                </div>
+
+                <div class="form-group recaptcha-wrapper"
+                    style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                    <re-captcha (resolved)="onCaptchaResolved($event)"
+                        siteKey="6Lcg2IMsAAAAABsnQqPhTVEBU0I2lg0Yxd39UaVH"></re-captcha>
+                    <div *ngIf="errors['recaptcha']" class="inline-error" style="margin-top: 10px; width: 100%;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors['recaptcha'] }}
+                    </div>
                 </div>
 
                 <div *ngIf="errorMessage" class="alert-error" style="margin-top: 10px;">{{ errorMessage }}</div>

@@ -4,6 +4,10 @@
   </div>
 
   <div class="navbar-actions">
+    <a *ngIf="isLoggedIn" [routerLink]="dashboardLink" class="btn-primary"
+      style="margin-right: 15px; text-decoration: none;">
+      Panel principal
+    </a>
     <app-profile></app-profile>
   </div>
 </nav>

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
-
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../models/user.model';
 import Swal from 'sweetalert2';
@@ -13,7 +13,7 @@ import { finalize } from 'rxjs';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, FooterComponent, RecaptchaModule, RecaptchaFormsModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
@@ -22,10 +22,15 @@ export class Users implements OnInit {
 
   // Note: Backend requires a password on creation. Edit is not supported by backend currently.
   currentUser: any = { nombre: '', email: '', password: '', telefono: '', role: '' };
+  showPassword = false;
+  recaptchaToken: string | null = null;
 
   users: User[] = [];
+  searchTerm = '';
+  selectedRole = '';
   isLoading = false;
   errorMessage = '';
+  errors: { [key: string]: string } = {};
   isSaving = false;
 
   constructor(
@@ -41,7 +46,8 @@ export class Users implements OnInit {
     this.isLoading = true;
     this.userService.getAllUsers().subscribe({
       next: (data) => {
-        this.users = data;
+        const currentEmail = localStorage.getItem('email');
+        this.users = data.filter(u => u.email !== currentEmail);
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -53,23 +59,69 @@ export class Users implements OnInit {
     });
   }
 
+  get filteredUsers(): User[] {
+    return this.users.filter(u => {
+      const matchSearch = u.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        u.email.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchRole = this.selectedRole ? u.role === this.selectedRole : true;
+      return matchSearch && matchRole;
+    });
+  }
+
   abrirModalCrear() {
     this.currentUser = { nombre: '', email: '', password: '', telefono: '', role: '' };
     this.errorMessage = '';
+    this.errors = {};
+    this.recaptchaToken = null;
     this.showModal = true;
   }
 
   cerrarModal() {
     this.showModal = false;
     this.errorMessage = '';
+    this.errors = {};
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  onCaptchaResolved(captchaResponse: string | null) {
+    this.recaptchaToken = captchaResponse;
+    if (captchaResponse) {
+      delete this.errors['recaptcha'];
+    }
   }
 
   guardarUsuario() {
     this.errorMessage = '';
-    if (!this.currentUser.nombre || !this.currentUser.email || !this.currentUser.password || !this.currentUser.role) {
-      this.errorMessage = 'Los campos nombre, email, password y rol son obligatorios.';
-      return;
+    this.errors = {};
+    let isValid = true;
+
+    if (!this.currentUser.nombre) { this.errors['nombre'] = 'El nombre es obligatorio.'; isValid = false; }
+    if (!this.currentUser.email) { this.errors['email'] = 'El correo es obligatorio.'; isValid = false; }
+    if (!this.currentUser.password) { this.errors['password'] = 'La contraseña es obligatoria.'; isValid = false; }
+    if (!this.currentUser.role) { this.errors['role'] = 'El rol es obligatorio.'; isValid = false; }
+
+    if (this.currentUser.telefono && !/^[0-9]+$/.test(this.currentUser.telefono)) {
+      this.errors['telefono'] = 'El teléfono solo debe contener números.';
+      isValid = false;
     }
+
+    if (this.currentUser.password) {
+      const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/;
+      if (this.currentUser.password.length < 8 || !passwordRegex.test(this.currentUser.password)) {
+        this.errors['password'] = 'Mínimo 8 caracteres, mayúscula, número y símbolo.';
+        isValid = false;
+      }
+    }
+
+    if (!this.recaptchaToken) {
+      this.errors['recaptcha'] = 'Por favor, resuelve el reCAPTCHA.';
+      isValid = false;
+    }
+
+    if (!isValid) return;
 
     this.isSaving = true;
 
@@ -79,8 +131,10 @@ export class Users implements OnInit {
     formData.append('email', this.currentUser.email);
     formData.append('password', this.currentUser.password);
     formData.append('telefono', this.currentUser.telefono || '');
-    // Backend expects 'role', but frontend select model uses 'rol'. Mapping to role:
     formData.append('role', this.currentUser.role);
+    if (this.recaptchaToken) {
+      formData.append('recaptchaToken', this.recaptchaToken);
+    }
 
     this.userService.createUser(formData).pipe(
       finalize(() => {
@@ -119,10 +173,9 @@ export class Users implements OnInit {
       if (result.isConfirmed) {
         this.userService.deleteUser(user.id).subscribe({
           next: () => {
-            // Instant UI update
             this.users = this.users.filter(u => u.id !== user.id);
             this.cdr.detectChanges();
-
+            this.loadUsers();
             Swal.fire({
               title: '¡Eliminado!',
               text: 'El usuario ha sido eliminado.',
@@ -133,6 +186,7 @@ export class Users implements OnInit {
           error: (err) => {
             this.errorMessage = err?.error?.message || 'Error al eliminar usuario.';
             this.cdr.detectChanges();
+            Swal.fire('Error', this.errorMessage, 'error');
           }
         });
       }

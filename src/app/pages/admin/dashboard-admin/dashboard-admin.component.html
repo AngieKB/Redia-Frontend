@@ -12,33 +12,36 @@
 
     <div class="page-content">
         <!-- Stats Grid -->
-        <div class="stats-grid four-cols">
+        <div *ngIf="isLoading" style="text-align: center; padding: 2rem; color: var(--ion-color-medium);">
+            Cargando estadísticas...
+        </div>
+        <div class="stats-grid four-cols" *ngIf="!isLoading">
             <div class="stat-card">
                 <div class="stat-icon">📅</div>
                 <div class="stat-info">
                     <span class="stat-label">Reservas Hoy</span>
-                    <span class="stat-value large">—</span>
+                    <span class="stat-value large">{{ reservasHoy }}</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📊</div>
                 <div class="stat-info">
                     <span class="stat-label">Reservas del Mes</span>
-                    <span class="stat-value large">—</span>
+                    <span class="stat-value large">{{ reservasMes }}</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👥</div>
                 <div class="stat-info">
-                    <span class="stat-label">Usuarios Registrados</span>
-                    <span class="stat-value large">—</span>
+                    <span class="stat-label">Clientes Registrados</span>
+                    <span class="stat-value large">{{ usuariosRegistrados }}</span>
                 </div>
             </div>
             <div class="stat-card accent">
                 <div class="stat-icon">⏳</div>
                 <div class="stat-info">
                     <span class="stat-label">Reservas Pendientes</span>
-                    <span class="stat-value large">—</span>
+                    <span class="stat-value large">{{ reservasPendientes }}</span>
                 </div>
             </div>
         </div>

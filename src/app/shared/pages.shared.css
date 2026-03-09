@@ -159,12 +159,17 @@
     color: var(--ion-color-primary-contrast);
 }
 
+.action-card.tertiary {
+    background: linear-gradient(135deg, var(--ion-color-primary-tint, #d8457c) 0%, var(--ion-color-primary) 100%);
+    color: var(--ion-color-primary-contrast);
+}
+
 .action-icon {
     font-size: 30px;
 }
 
 .action-label {
-    font-size: 17px;
+    font-size: 22px;
     font-weight: 700;
 }
 

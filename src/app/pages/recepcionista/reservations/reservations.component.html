@@ -14,7 +14,7 @@
                     </svg>
                 </a>
                 <div>
-                    <h1 class="page-title">🗂️ Gestión de Reservas</h1>
+                    <h1 class="page-title">Gestión de Reservas</h1>
                     <p class="page-subtitle">{{ reservations.length }} reserva(s) encontrada(s)</p>
                 </div>
             </div>
@@ -31,18 +31,18 @@
             <div class="filters-grid">
 
                 <div class="filter-group">
-                    <label>📅 Fecha</label>
+                    <label>Fecha</label>
                     <input type="date" class="filter-input" [(ngModel)]="filtroFecha"
                         (ngModelChange)="applyFilters()" />
                 </div>
 
                 <div class="filter-group">
-                    <label>🕐 Hora de entrada</label>
+                    <label>Hora de entrada</label>
                     <input type="time" class="filter-input" [(ngModel)]="filtroHora" (ngModelChange)="applyFilters()" />
                 </div>
 
                 <div class="filter-group">
-                    <label>📌 Estado</label>
+                    <label>Estado</label>
                     <select class="filter-input" [(ngModel)]="filtroEstado" (ngModelChange)="applyFilters()">
                         <option value="">Todos</option>
                         <option value="solicitada">Solicitada</option>
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <label>🔍 Cliente</label>
+                    <label>Cliente</label>
                     <input type="text" class="filter-input" placeholder="Buscar por nombre o email..."
                         [(ngModel)]="filtroCliente" (ngModelChange)="applyFilters()" />
                 </div>

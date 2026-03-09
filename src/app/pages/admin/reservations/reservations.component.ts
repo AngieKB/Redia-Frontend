@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 
+import Swal from 'sweetalert2';
+
 import { ReservationService } from '../../../core/services/reservation.service';
 import { Reservation } from '../../../models/reservation.model';
 
@@ -16,6 +18,13 @@ import { Reservation } from '../../../models/reservation.model';
   styleUrl: './reservations.component.css',
 })
 export class Reservations implements OnInit {
+  // Filters
+  filtroFecha = '';
+  filtroHora = '';
+  filtroEstado = '';
+  filtroCliente = '';
+
+  allReservations: Reservation[] = [];
   reservations: Reservation[] = [];
   isLoading = false;
   errorMessage = '';
@@ -33,7 +42,8 @@ export class Reservations implements OnInit {
     this.isLoading = true;
     this.reservationService.getAllReservations().subscribe({
       next: (data) => {
-        this.reservations = data;
+        this.allReservations = data;
+        this.applyFilters();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -45,16 +55,53 @@ export class Reservations implements OnInit {
     });
   }
 
+  applyFilters() {
+    this.reservations = this.allReservations.filter(r => {
+      const fechaFull = r.fechaReserva ? r.fechaReserva.split('T')[0] : '';
+      const horaFull = r.fechaReserva ? r.fechaReserva.split('T')[1]?.substring(0, 5) : '';
+      const matchFecha = !this.filtroFecha || fechaFull === this.filtroFecha;
+      const matchHora = !this.filtroHora || horaFull?.startsWith(this.filtroHora);
+      const matchEstado = !this.filtroEstado || r.estado.toLowerCase() === this.filtroEstado.toLowerCase();
+      const searchTerm = this.filtroCliente.toLowerCase();
+      const matchCliente = !searchTerm
+        || r.clienteEmail.toLowerCase().includes(searchTerm)
+        || (r.clienteNombre ?? '').toLowerCase().includes(searchTerm);
+      return matchFecha && matchHora && matchEstado && matchCliente;
+    });
+  }
+
+  clearFilters() {
+    this.filtroFecha = '';
+    this.filtroHora = '';
+    this.filtroEstado = '';
+    this.filtroCliente = '';
+    this.applyFilters();
+  }
+
   cancelarReserva(r: Reservation) {
     if (r.estado === 'CANCELADA' || r.estado === 'FINALIZADA') return;
 
-    if (confirm(`¿Cancelar reserva #${r.id} del cliente ${r.clienteEmail}?`)) {
-      this.reservationService.cancelReservation(r.id).subscribe({
-        next: () => this.loadReservations(),
-        error: (err) => {
-          alert('Error al cancelar: ' + (err?.error?.message || err?.error || ''));
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Cancelar reserva?',
+      text: `Cancelarás la reserva #${r.id} del cliente ${r.clienteNombre || r.clienteEmail}. Esta acción es irreversible.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#bd1b5b',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.reservationService.cancelReservation(r.id).subscribe({
+          next: () => {
+            this.loadReservations();
+            Swal.fire({ title: '¡Cancelada!', text: 'La reserva fue cancelada.', icon: 'success', confirmButtonColor: '#bd1b5b' });
+          },
+          error: (err) => {
+            Swal.fire('Error', 'Error al cancelar: ' + (err?.error?.message || err?.error || ''), 'error');
+          }
+        });
+      }
+    });
   }
 }

@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
+
+import { ReservationService } from '../../../core/services/reservation.service';
+import { Reservation } from '../../../models/reservation.model';
 
 @Component({
   selector: 'app-admin-reservations',
@@ -12,29 +15,46 @@ import { FooterComponent } from '../../../shared/footer/footer.component';
   templateUrl: './reservations.component.html',
   styleUrl: './reservations.component.css',
 })
-export class Reservations {
-  reservations: any[] = [
-    {
-      id: 1, cliente: 'María García', fecha: new Date('2026-03-08'),
-      horaEntrada: '19:00', horaSalida: '20:30', personas: 4,
-      estado: 'confirmada', creadaEn: new Date('2026-03-01T10:30:00'), finalizadaEn: null
-    },
-    {
-      id: 2, cliente: 'Carlos Ruiz', fecha: new Date('2026-03-08'),
-      horaEntrada: '13:00', horaSalida: '14:00', personas: 2,
-      estado: 'pendiente', creadaEn: new Date('2026-03-07T08:15:00'), finalizadaEn: null
-    },
-    {
-      id: 3, cliente: 'Ana Martínez', fecha: new Date('2026-03-01'),
-      horaEntrada: '20:00', horaSalida: '21:30', personas: 6,
-      estado: 'finalizada', creadaEn: new Date('2026-02-25T11:00:00'), finalizadaEn: new Date('2026-03-01T21:32:00')
-    }
-  ];
+export class Reservations implements OnInit {
+  reservations: Reservation[] = [];
+  isLoading = false;
+  errorMessage = '';
 
-  cancelarReserva(r: any) {
-    if (r.estado === 'cancelada' || r.estado === 'finalizada') return;
-    if (confirm(`¿Cancelar reserva #${r.id} de ${r.cliente}?`)) {
-      r.estado = 'cancelada';
+  constructor(
+    private reservationService: ReservationService,
+    private cdr: ChangeDetectorRef
+  ) { }
+
+  ngOnInit() {
+    this.loadReservations();
+  }
+
+  loadReservations() {
+    this.isLoading = true;
+    this.reservationService.getAllReservations().subscribe({
+      next: (data) => {
+        this.reservations = data;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.message || 'Error al cargar las reservas.';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  cancelarReserva(r: Reservation) {
+    if (r.estado === 'CANCELADA' || r.estado === 'FINALIZADA') return;
+
+    if (confirm(`¿Cancelar reserva #${r.id} del cliente ${r.clienteEmail}?`)) {
+      this.reservationService.cancelReservation(r.id).subscribe({
+        next: () => this.loadReservations(),
+        error: (err) => {
+          alert('Error al cancelar: ' + (err?.error?.message || err?.error || ''));
+        }
+      });
     }
   }
 }

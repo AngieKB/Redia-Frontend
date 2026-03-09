@@ -17,53 +17,28 @@
                 <div class="stat-icon">📅</div>
                 <div class="stat-info">
                     <span class="stat-label">Reservas Hoy</span>
-                    <span class="stat-value large">24</span>
+                    <span class="stat-value large">—</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📊</div>
                 <div class="stat-info">
                     <span class="stat-label">Reservas del Mes</span>
-                    <span class="stat-value large">312</span>
+                    <span class="stat-value large">—</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👥</div>
                 <div class="stat-info">
                     <span class="stat-label">Usuarios Registrados</span>
-                    <span class="stat-value large">87</span>
+                    <span class="stat-value large">—</span>
                 </div>
             </div>
             <div class="stat-card accent">
                 <div class="stat-icon">⏳</div>
                 <div class="stat-info">
                     <span class="stat-label">Reservas Pendientes</span>
-                    <span class="stat-value large">8</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts row -->
-        <div class="section-title">Estadísticas</div>
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h3 class="chart-title">Reservas por Estado</h3>
-                <div class="donut-chart">
-                    <div class="donut-legend">
-                        <span class="legend-item"><span class="dot confirmed"></span>Confirmadas 35%</span>
-                        <span class="legend-item"><span class="dot pending"></span>Pendientes 25%</span>
-                        <span class="legend-item"><span class="dot cancelled"></span>Canceladas 15%</span>
-                        <span class="legend-item"><span class="dot finished"></span>Finalizadas 25%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="chart-card">
-                <h3 class="chart-title">Reservas esta semana</h3>
-                <div class="bar-chart">
-                    <div class="bar-group" *ngFor="let day of weekData">
-                        <div class="bar-fill" [style.height.%]="day.pct"></div>
-                        <span class="bar-label">{{ day.label }}</span>
-                    </div>
+                    <span class="stat-value large">—</span>
                 </div>
             </div>
         </div>
@@ -74,9 +49,14 @@
             <button class="action-card primary" routerLink="/admin/reservations">
                 <span class="action-icon">📋</span>
                 <span class="action-label">Ver Reservas</span>
-                <span class="action-desc">Gestionar todas las reservas</span>
+                <span class="action-desc">Consultar todas las reservas</span>
             </button>
-            <button class="action-card secondary" routerLink="/admin/users">
+            <button class="action-card secondary" routerLink="/admin/tables">
+                <span class="action-icon">🪑</span>
+                <span class="action-label">Gestionar Mesas</span>
+                <span class="action-desc">Agregar, editar y eliminar mesas</span>
+            </button>
+            <button class="action-card tertiary" routerLink="/admin/users">
                 <span class="action-icon">👤</span>
                 <span class="action-label">Gestionar Usuarios</span>
                 <span class="action-desc">Crear, editar y eliminar usuarios</span>

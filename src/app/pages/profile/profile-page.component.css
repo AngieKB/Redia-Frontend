@@ -114,6 +114,23 @@
     color: white;
 }
 
+.btn-logout {
+    background: transparent;
+    color: #e53935;
+    border: 2px solid #e53935;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: #e53935;
+    color: white;
+}
+
 /* Edit Form */
 .edit-form {
     margin-top: 24px;

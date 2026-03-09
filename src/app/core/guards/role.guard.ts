@@ -7,13 +7,26 @@ export const RoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     const authService = inject(AuthService)
     const router = inject(Router)
 
-    const expectedRoles = route.data['roles']
+    if (!authService.isLogged()) {
+        router.navigate(['/login'])
+        return false
+    }
+
+    const expectedRoles: string[] = route.data['roles']
     const role = authService.getRole()
 
-    if (expectedRoles.includes(role)) {
+    if (role && expectedRoles.includes(role)) {
         return true
     }
 
-    router.navigate(['/login'])
+    // Authenticated but wrong role → redirect to own dashboard
+    if (role === 'ADMINISTRADOR') {
+        router.navigate(['/admin/dashboard'])
+    } else if (role === 'RECEPCIONISTA') {
+        router.navigate(['/recepcionista/dashboard'])
+    } else {
+        router.navigate(['/cliente/my-reservations'])
+    }
+
     return false
 }

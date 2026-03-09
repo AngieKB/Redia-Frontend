@@ -13,7 +13,7 @@
             <button class="btn-primary"
                 style="background: transparent; border: 1px solid white; border-radius: 20px; padding: 8px 16px; color: white;"
                 routerLink="/cliente/support">
-                🎧 Atr. C.
+                🎧 Contáctanos
             </button>
             <button class="btn-primary"
                 style="background: white; border: 1px solid white; border-radius: 20px; padding: 8px 16px; color: var(--ion-color-secondary); font-weight: bold;"
@@ -22,6 +22,9 @@
             </button>
         </div>
     </div>
+
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="alert-error" style="margin: 1rem;">{{ errorMessage }}</div>
 
     <div class="segment-container" style="padding: 1rem; background: var(--ion-background-color);">
         <div class="custom-segment"
@@ -40,43 +43,51 @@
     </div>
 
     <div class="page-content" style="padding: 0 1rem 2rem 1rem;">
+
+        <div *ngIf="isLoading" style="padding: 20px; text-align: center; color: var(--ion-text-color);">Cargando tus
+            reservas...</div>
+
         <!-- Empty state -->
-        <div class="empty-state" *ngIf="filteredReservations.length === 0"
+        <div class="empty-state" *ngIf="!isLoading && filteredReservations.length === 0"
             style="text-align: center; margin-top: 3rem; color: var(--ion-text-color);">
             <p>No tienes reservas en esta categoría.</p>
         </div>
 
         <!-- Reservations list -->
-        <div class="reservations-list" *ngIf="filteredReservations.length > 0">
+        <div class="reservations-list" *ngIf="!isLoading && filteredReservations.length > 0">
             <div class="reservation-card" *ngFor="let r of filteredReservations"
                 style="background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
                 <div class="res-main" style="display: flex; align-items: flex-start; justify-content: space-between;">
                     <div style="display: flex; gap: 1rem;">
                         <div
                             style="background: var(--ion-color-secondary); color: white; border-radius: 8px; text-align: center; width: 60px; height: 60px; display: flex; flex-direction: column; justify-content: center;">
-                            <span style="font-size: 1.2rem; font-weight: bold;">{{ r.fecha | date:'d' }}</span>
-                            <span style="font-size: 0.8rem; text-transform: uppercase;">{{ r.fecha | date:'MMM'
+                            <span style="font-size: 1.2rem; font-weight: bold;">{{ r.fechaReserva | date:'d' }}</span>
+                            <span style="font-size: 0.8rem; text-transform: uppercase;">{{ r.fechaReserva | date:'MMM'
                                 }}</span>
                         </div>
-                        <div style="display: flex; flexDirection: column; justify-content: center;">
+                        <div style="display: flex; flex-direction: column; justify-content: center;">
                             <h3
                                 style="margin: 0 0 5px; font-weight: bold; color: var(--ion-color-tertiary); font-size: 1.1rem;">
-                                {{ r.fecha | date:'HH:mm' }}</h3>
+                                {{ r.fechaReserva | date:'HH:mm' }} - {{ r.horaFinReserva | date:'HH:mm' }}
+                            </h3>
                             <p style="margin: 0; color: var(--ion-text-color); font-size: 0.9rem;">{{ r.numeroPersonas
                                 }} personas</p>
                         </div>
                     </div>
                 </div>
+
                 <div class="res-footer"
                     style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid #f0f0f0; padding-top: 1rem;">
                     <span class="status-badge" [ngClass]="getColorStatus(r.estado)">{{ r.estado }}</span>
-                    <div class="res-actions" *ngIf="r.estado === 'SOLICITADA' || r.estado === 'CONFIRMADA'">
+                    <div class="res-actions" *ngIf="r.estado === 'PENDIENTE' || r.estado === 'CONFIRMADA'">
                         <button class="btn-cancel-res" (click)="cancelarReserva(r.id)"
                             style="border: 1px solid var(--ion-color-danger); color: var(--ion-color-danger); background: transparent; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer;">
                             Cancelar
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

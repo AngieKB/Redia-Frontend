@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
+
+import { ReservationService } from '../../../core/services/reservation.service';
+import { Reservation } from '../../../models/reservation.model';
 
 type ReservationStatus = 'SOLICITADA' | 'CONFIRMADA' | 'RECHAZADA' | 'CANCELADA' | 'FINALIZADA';
 
@@ -14,19 +17,41 @@ type ReservationStatus = 'SOLICITADA' | 'CONFIRMADA' | 'RECHAZADA' | 'CANCELADA'
   templateUrl: './my-reservations.component.html',
   styleUrl: './my-reservations.component.css',
 })
-export class MyReservations {
+export class MyReservations implements OnInit {
   filterStatus: ReservationStatus = 'CONFIRMADA';
+  reservations: Reservation[] = [];
+  isLoading = false;
+  errorMessage = '';
 
-  reservations: any[] = [
-    { id: '1', fecha: new Date('2026-03-08T19:00:00'), numeroPersonas: 4, estado: 'CONFIRMADA' },
-    { id: '2', fecha: new Date('2026-03-10T14:00:00'), numeroPersonas: 2, estado: 'FINALIZADA' },
-    { id: '3', fecha: new Date('2026-03-05T19:30:00'), numeroPersonas: 2, estado: 'CANCELADA' },
-    { id: '4', fecha: new Date('2026-03-11T20:00:00'), numeroPersonas: 6, estado: 'SOLICITADA' },
-    { id: '5', fecha: new Date('2026-03-01T21:00:00'), numeroPersonas: 15, estado: 'RECHAZADA' },
-  ];
+  constructor(
+    private reservationService: ReservationService,
+    private cdr: ChangeDetectorRef
+  ) { }
+
+  ngOnInit() {
+    this.loadMyReservations();
+  }
+
+  loadMyReservations() {
+    this.isLoading = true;
+    this.reservationService.getMyReservations().subscribe({
+      next: (data) => {
+        this.reservations = data;
+        console.log('Mis reservas cargadas y parseadas:', this.reservations);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching reservations:', err);
+        this.errorMessage = err?.error?.message || 'Error al cargar tus reservas.';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   get filteredReservations() {
-    return this.reservations.filter(r => r.estado === this.filterStatus);
+    return this.reservations.filter(r => r.estado && r.estado.toUpperCase() === this.filterStatus);
   }
 
   setFilter(status: ReservationStatus) {
@@ -34,14 +59,18 @@ export class MyReservations {
   }
 
   cancelarReserva(id: string) {
-    if (confirm(`¿Deseas cancelar esta reserva?`)) {
-      this.reservations = this.reservations.map(r => r.id === id ? { ...r, estado: 'CANCELADA' } : r);
+    if (confirm(`¿Deseas cancelar esta reserva de forma irreversible?`)) {
+      this.reservationService.cancelReservation(id).subscribe({
+        next: () => this.loadMyReservations(),
+        error: (err) => alert('Error al cancelar: ' + (err?.error?.message || err?.error || ''))
+      });
     }
   }
 
   getColorStatus(status: string) {
-    switch (status) {
-      case 'SOLICITADA': return 'status-solicitada';
+    if (!status) return 'status-default';
+    switch (status.toUpperCase()) {
+      case 'PENDIENTE': return 'status-solicitada';
       case 'CONFIRMADA': return 'status-confirmada';
       case 'CANCELADA': return 'status-cancelada';
       case 'RECHAZADA': return 'status-rechazada';

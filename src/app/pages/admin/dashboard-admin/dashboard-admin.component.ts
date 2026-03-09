@@ -11,14 +11,4 @@ import { FooterComponent } from '../../../shared/footer/footer.component';
   templateUrl: './dashboard-admin.component.html',
   styleUrl: './dashboard-admin.component.css',
 })
-export class DashboardAdmin {
-  weekData = [
-    { label: 'Lun', pct: 60 },
-    { label: 'Mar', pct: 80 },
-    { label: 'Mié', pct: 45 },
-    { label: 'Jue', pct: 90 },
-    { label: 'Vie', pct: 100 },
-    { label: 'Sáb', pct: 75 },
-    { label: 'Dom', pct: 30 },
-  ];
-}
+export class DashboardAdmin { }

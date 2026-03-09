@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
@@ -53,7 +53,8 @@ export class ProfilePage implements OnInit {
     private location: Location,
     private alertService: AlertService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -67,6 +68,15 @@ export class ProfilePage implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  logout() {
+    this.authService.logout();
+    localStorage.removeItem('nombre');
+    localStorage.removeItem('email');
+    localStorage.removeItem('telefono');
+    localStorage.removeItem('fotoUrl');
+    this.router.navigate(['/login']);
   }
 
   editarDatos() {

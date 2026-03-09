@@ -22,6 +22,8 @@
     </div>
 
     <div class="page-content">
+        <!-- Error message -->
+        <div *ngIf="errorMessage" class="alert-error">{{ errorMessage }}</div>
 
         <!-- Filters -->
         <div class="filters-card">
@@ -52,19 +54,10 @@
                 </div>
 
                 <div class="filter-group">
-                    <label>🔍 Cliente</label>
-                    <input type="text" class="filter-input" placeholder="Buscar por nombre..."
+                    <label>🔍 Email Cliente</label>
+                    <input type="text" class="filter-input" placeholder="Buscar por email..."
                         [(ngModel)]="filtroCliente" (ngModelChange)="applyFilters()" />
                 </div>
-
-                <div class="filter-group">
-                    <label>🪑 Por mesa</label>
-                    <select class="filter-input" [(ngModel)]="filtroMesa" (ngModelChange)="applyFilters()">
-                        <option [ngValue]="null">Todas</option>
-                        <option *ngFor="let n of [1,2,3,4,5,6,7,8]" [ngValue]="n">Mesa {{ n }}</option>
-                    </select>
-                </div>
-
             </div>
             <div style="display:flex; justify-content:flex-end; margin-top:12px;">
                 <button class="btn-clear" (click)="clearFilters()">✕ Limpiar filtros</button>
@@ -72,59 +65,50 @@
         </div>
 
         <!-- Reservations Table -->
-        <div *ngIf="reservations.length === 0" class="empty-state">
+        <div *ngIf="isLoading" style="padding: 20px; text-align: center;">Cargando reservas...</div>
+
+        <div *ngIf="!isLoading && reservations.length === 0" class="empty-state">
             <span class="empty-icon">🔍</span>
             <p>No se encontraron reservas con los filtros aplicados.</p>
             <button class="btn-primary" (click)="clearFilters()">Limpiar filtros</button>
         </div>
 
-        <div *ngIf="reservations.length > 0" class="table-wrapper">
+        <div *ngIf="!isLoading && reservations.length > 0" class="table-wrapper">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Cliente</th>
+                        <th>Email Cliente</th>
                         <th>Fecha</th>
                         <th>Hora entrada</th>
                         <th>Hora salida</th>
                         <th>Personas</th>
-                        <th>Mesas</th>
-                        <th>Cant.</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let r of reservations">
-                        <td class="id-cell">{{ r.id }}</td>
-                        <td>
-                            <div class="user-name-cell">
-                                <div class="user-avatar">{{ r.cliente.charAt(0) }}</div>
-                                {{ r.cliente }}
-                            </div>
-                        </td>
-                        <td class="meta-cell">{{ r.fecha }}</td>
-                        <td><strong>{{ r.horaEntrada }}</strong></td>
-                        <td class="meta-cell">{{ r.horaSalida }}</td>
-                        <td>👥 {{ r.personas }}</td>
-                        <td class="meta-cell" style="min-width:120px;">
-                            <span *ngFor="let m of r.mesas; let last = last">Mesa {{ m }}{{ !last ? ', ' : '' }}</span>
-                        </td>
-                        <td style="text-align:center;font-weight:700;">{{ r.cantMesas }}</td>
+                        <td class="id-cell" title="{{ r.id }}">...{{ r.id.substring(r.id.length - 6) }}</td>
+                        <td>{{ r.clienteEmail }}</td>
+                        <td class="meta-cell">{{ r.fechaReserva | date:'dd/MM/yyyy' }}</td>
+                        <td><strong>{{ r.fechaReserva | date:'HH:mm' }}</strong></td>
+                        <td class="meta-cell">{{ r.horaFinReserva | date:'HH:mm' }}</td>
+                        <td>👥 {{ r.numeroPersonas }}</td>
                         <td>
                             <span class="status-badge" [ngClass]="getStatusClass(r.estado)">{{ r.estado }}</span>
                         </td>
                         <td>
                             <div class="table-actions">
-                                <button class="btn-confirm" [disabled]="!canConfirm(r)" (click)="confirmarReserva(r)"
-                                    title="Confirmar reserva">
+                                <button class="btn-confirm" *ngIf="canConfirm(r)" (click)="confirmarReserva(r)"
+                                    title="Confirmar reserva (Asignar Mesas)">
                                     ✅ Confirmar
                                 </button>
-                                <button class="btn-reject" [disabled]="!canReject(r)" (click)="rechazarReserva(r)"
+                                <button class="btn-reject" *ngIf="canReject(r)" (click)="rechazarReserva(r)"
                                     title="Rechazar reserva">
                                     ✖ Rechazar
                                 </button>
-                                <button class="btn-table-cancel" [disabled]="!canCancel(r)" (click)="cancelarReserva(r)"
+                                <button class="btn-table-cancel" *ngIf="canCancel(r)" (click)="cancelarReserva(r)"
                                     title="Cancelar reserva">
                                     ⊘ Cancelar
                                 </button>

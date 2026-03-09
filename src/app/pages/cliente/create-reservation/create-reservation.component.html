@@ -1,83 +1,120 @@
 <app-navbar></app-navbar>
 
-<div class="page-container"
-    style="background: var(--ion-background-color); min-height: calc(100vh - 60px); padding: 0;">
-
-    <div class="page-header"
-        style="background: var(--ion-color-secondary); padding: 2rem 1.5rem; color: white; display: flex; justify-content: space-between; align-items: center; border-radius: 0;">
-        <div>
-            <h1 style="margin: 0; font-size: 1.8rem; font-weight: bold;">Nueva Reserva</h1>
-            <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.9rem;">Prepara tu mesa con nosotros</p>
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-inner"
+            style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%;">
+            <button class="back-btn" routerLink="/cliente/my-reservations"
+                style="background: none; border: none; cursor: pointer; color: white; position: absolute; left: 0px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </button>
+            <div style="text-align: center;">
+                <h1 class="page-title">Nueva Reserva</h1>
+                <p class="page-subtitle">Prepara tu mesa con nosotros</p>
+            </div>
         </div>
     </div>
 
-    <div class="page-content" style="padding: 2rem 1.5rem;">
+    <div class="page-content">
+        <div class="form-container">
+            <div class="form-header-section">
+                <h2 class="form-title">Preparar tu mesa</h2>
+                <p class="form-subtitle">Selecciona los detalles de tu reserva.</p>
+            </div>
 
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 style="color: var(--ion-color-secondary); font-weight: bold; margin: 0; font-size: 24px;">Preparar tu
-                mesa</h2>
-            <p style="color: var(--ion-text-color); margin-top: 5px;">Selecciona los detalles de tu reserva.</p>
+            <form (ngSubmit)="onSubmit()" #reserveForm="ngForm" novalidate>
+                <!-- Número de Personas -->
+                <div class="form-group">
+                    <label>Número de Personas <span class="hint">(Máximo 32)</span></label>
+                    <div class="input-wrapper">
+                        <input type="number" [(ngModel)]="numeroPersonas" name="numeroPersonas" placeholder="Ej: 4"
+                            min="1" max="32" required>
+                    </div>
+                    <div *ngIf="errors.personas" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors.personas }}
+                    </div>
+                </div>
+
+                <!-- Fecha -->
+                <div class="form-group">
+                    <label>Fecha de la Reserva</label>
+                    <div class="input-wrapper">
+                        <input type="date" [(ngModel)]="fecha" name="fecha" [min]="minDate" (change)="onFechaChange()"
+                            required>
+                    </div>
+                    <div *ngIf="errors.fecha" class="inline-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ errors.fecha }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- Hora Entrada -->
+                    <div class="form-group">
+                        <label>Hora de Inicio</label>
+                        <div class="input-wrapper">
+                            <input type="time" [(ngModel)]="horaEntrada" name="horaEntrada"
+                                (change)="onHoraEntradaChange()" [min]="minHoraEntrada" [max]="maxHoraEntrada" required>
+                        </div>
+                        <div *ngIf="errors.horaEntrada" class="inline-error">
+                            {{ errors.horaEntrada }}
+                        </div>
+                    </div>
+
+                    <!-- Hora Salida -->
+                    <div class="form-group">
+                        <label>Hora de Fin</label>
+                        <div class="input-wrapper">
+                            <input type="time" [(ngModel)]="horaSalida" name="horaSalida" [min]="minHoraSalidaField"
+                                [max]="maxHoraSalidaField" required>
+                        </div>
+                        <div *ngIf="errors.horaSalida" class="inline-error">
+                            {{ errors.horaSalida }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-banner" *ngIf="fecha">
+                    <p class="hint-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        Horario: Lunes a Viernes 8am-10pm, Sábados 8am-4pm. Máximo 3 horas.
+                    </p>
+                </div>
+
+                <div *ngIf="errorMessage" class="main-error">
+                    {{ errorMessage }}
+                </div>
+
+                <button type="submit" class="submit-btn" [disabled]="isLoading">
+                    <span *ngIf="!isLoading">Confirmar Reserva</span>
+                    <span *ngIf="isLoading">Procesando...</span>
+                </button>
+
+                <button type="button" class="cancel-btn" routerLink="/cliente/my-reservations">
+                    Volver a Mis Reservas
+                </button>
+            </form>
         </div>
-
-        <form (ngSubmit)="onSubmit()" #reserveForm="ngForm">
-
-            <div class="custom-item">
-                <label>Número de Personas</label>
-                <select [(ngModel)]="reservation.personas" name="personas" required>
-                    <option value="" disabled selected>Selecciona cantidad</option>
-                    <option [value]="1">1 Persona</option>
-                    <option [value]="2">2 Personas</option>
-                    <option [value]="3">3 Personas</option>
-                    <option [value]="4">4 Personas</option>
-                    <option [value]="5">5 Personas</option>
-                    <option [value]="6">6 Personas</option>
-                    <option [value]="7">7 Personas</option>
-                    <option [value]="8">8 Personas</option>
-                </select>
-            </div>
-
-            <div class="custom-item">
-                <label>Fecha de la Reserva</label>
-                <input type="date" [(ngModel)]="reservation.fecha" name="fecha" [min]="minDate" required>
-            </div>
-
-            <div class="custom-item">
-                <label>Hora de Entrada</label>
-                <input type="time" [(ngModel)]="reservation.horaEntrada" name="horaEntrada"
-                    (change)="onHoraEntradaChange()" required>
-            </div>
-
-            <div class="custom-item">
-                <label>Hora de Salida Estimada</label>
-                <input type="time" [(ngModel)]="reservation.horaSalida" name="horaSalida" required>
-                <div class="hint">Máximo 2 horas después de la entrada</div>
-            </div>
-
-            <div class="custom-item" style="margin-bottom: 2rem;">
-                <label>Ocasión Especial (Opcional)</label>
-                <select [(ngModel)]="reservation.ocasion" name="ocasion">
-                    <option value="" selected>Ninguna</option>
-                    <option value="cumpleanos">Cumpleaños</option>
-                    <option value="aniversario">Aniversario</option>
-                    <option value="negocios">Reunión de Negocios</option>
-                </select>
-            </div>
-
-            <button type="submit" class="submit-btn" [disabled]="reserveForm.invalid">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    style="margin-right: 10px;">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                Confirmar Reserva
-            </button>
-
-            <button type="button" class="cancel-btn" routerLink="/cliente/my-reservations">
-                Volver a Mis Reservas
-            </button>
-
-        </form>
     </div>
 </div>
 

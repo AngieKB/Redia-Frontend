@@ -14,20 +14,25 @@
     </div>
 
     <div class="page-content">
+        <!-- Error message -->
+        <div *ngIf="errorMessage" class="alert-error">{{ errorMessage }}</div>
+
         <!-- Filters -->
         <div class="filters-bar">
             <input type="text" placeholder="🔍 Buscar por nombre o email..." class="search-input" />
             <select class="filter-select">
                 <option value="">Todos los roles</option>
-                <option value="admin">Admin</option>
-                <option value="recepcionista">Recepcionista</option>
-                <option value="cliente">Cliente</option>
+                <option value="ADMINISTRADOR">Admin</option>
+                <option value="RECEPCIONISTA">Recepcionista</option>
+                <option value="CLIENTE">Cliente</option>
             </select>
         </div>
 
         <!-- Table -->
         <div class="table-wrapper">
-            <table class="data-table">
+            <div *ngIf="isLoading" class="loading-text" style="padding: 20px; text-align: center;">Cargando usuarios...
+            </div>
+            <table class="data-table" *ngIf="!isLoading">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -41,18 +46,18 @@
                     <tr *ngFor="let user of users">
                         <td>
                             <div class="user-name-cell">
-                                <div class="user-avatar">{{ user.nombre.charAt(0) }}</div>
+                                <div class="user-avatar">{{ user.nombre.charAt(0) | uppercase }}</div>
                                 {{ user.nombre }}
                             </div>
                         </td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.telefono }}</td>
                         <td>
-                            <span class="role-badge" [ngClass]="'role-' + user.rol">{{ user.rol }}</span>
+                            <span class="role-badge" [ngClass]="'role-' + (user.role | lowercase)">{{ user.role
+                                }}</span>
                         </td>
                         <td>
                             <div class="table-actions">
-                                <button class="btn-table-edit" (click)="editarUsuario(user)">Editar</button>
                                 <button class="btn-table-delete" (click)="eliminarUsuario(user)">Eliminar</button>
                             </div>
                         </td>
@@ -65,11 +70,11 @@
         </div>
     </div>
 
-    <!-- Modal Crear/Editar Usuario -->
+    <!-- Modal Crear Usuario -->
     <div class="modal-overlay" *ngIf="showModal" (click)="cerrarModal()">
         <div class="modal-card" (click)="$event.stopPropagation()">
             <div class="modal-header">
-                <h2>{{ editMode ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
+                <h2>Crear Usuario</h2>
                 <button class="modal-close" (click)="cerrarModal()">✕</button>
             </div>
             <form class="modal-form" (ngSubmit)="guardarUsuario()">
@@ -84,23 +89,32 @@
                         required />
                 </div>
                 <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" [(ngModel)]="currentUser.password" name="password"
+                        placeholder="Contraseña de acceso" required />
+                </div>
+                <div class="form-group">
                     <label>Teléfono</label>
                     <input type="tel" [(ngModel)]="currentUser.telefono" name="telefono"
                         placeholder="+57 300 000 0000" />
                 </div>
                 <div class="form-group">
                     <label>Rol</label>
-                    <select [(ngModel)]="currentUser.rol" name="rol" required>
+                    <select [(ngModel)]="currentUser.role" name="role" required>
                         <option value="">Seleccionar rol</option>
-                        <option value="admin">Admin</option>
-                        <option value="recepcionista">Recepcionista</option>
-                        <option value="cliente">Cliente</option>
+                        <option value="ADMINISTRADOR">Admin</option>
+                        <option value="RECEPCIONISTA">Recepcionista</option>
+                        <option value="CLIENTE">Cliente</option>
                     </select>
                 </div>
-                <div class="form-actions">
+
+                <div *ngIf="errorMessage" class="alert-error" style="margin-top: 10px;">{{ errorMessage }}</div>
+
+                <div class="form-actions" style="margin-top: 20px;">
                     <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
-                    <button type="submit" class="btn-primary">{{ editMode ? 'Guardar Cambios' : 'Crear Usuario'
-                        }}</button>
+                    <button type="submit" class="btn-primary" [disabled]="isSaving">
+                        {{ isSaving ? 'Guardando...' : 'Crear Usuario' }}
+                    </button>
                 </div>
             </form>
         </div>

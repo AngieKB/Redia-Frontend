@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
         if (response.credential) {
             this.ngZone.run(() => {
                 this.authService.googleLogin(response.credential).subscribe({
-                    next: (res: AuthResponse) => {
+                    next: (res: any) => {
                         localStorage.setItem('accessToken', res.accessToken)
                         localStorage.setItem('refreshToken', res.refreshToken)
                         localStorage.setItem('role', res.role)
@@ -72,8 +72,19 @@ export class LoginComponent implements OnInit {
                         if (res.telefono) localStorage.setItem('telefono', res.telefono)
                         if (res.fotoUrl) localStorage.setItem('fotoUrl', res.fotoUrl)
 
-                        // Always go to complete-profile after Google login
-                        this.router.navigate(['/complete-google-profile'])
+                        // If phone is missing, profile is incomplete
+                        if (!res.telefono || res.telefono.trim() === '') {
+                            this.router.navigate(['/complete-google-profile'])
+                        } else {
+                            // Profile is complete, go to dashboard
+                            if (res.role === 'ADMINISTRADOR') {
+                                this.router.navigate(['/admin/dashboard'])
+                            } else if (res.role === 'RECEPCIONISTA') {
+                                this.router.navigate(['/recepcionista/dashboard'])
+                            } else {
+                                this.router.navigate(['/cliente/my-reservations'])
+                            }
+                        }
                     },
                     error: (err) => {
                         this.errorMessage = this.getBackendError(err, 'Error con el inicio de sesión de Google. Inténtalo de nuevo.');

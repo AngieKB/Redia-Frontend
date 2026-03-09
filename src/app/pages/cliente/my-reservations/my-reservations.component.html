@@ -61,10 +61,13 @@
                 <div class="res-main" style="display: flex; align-items: flex-start; justify-content: space-between;">
                     <div style="display: flex; gap: 1rem;">
                         <div
-                            style="background: var(--ion-color-secondary); color: white; border-radius: 8px; text-align: center; width: 60px; height: 60px; display: flex; flex-direction: column; justify-content: center;">
-                            <span style="font-size: 1.2rem; font-weight: bold;">{{ r.fechaReserva | date:'d' }}</span>
-                            <span style="font-size: 0.8rem; text-transform: uppercase;">{{ r.fechaReserva | date:'MMM'
-                                }}</span>
+                            style="background: var(--ion-color-secondary); color: white; border-radius: 8px; text-align: center; min-width: 64px; padding: 6px 10px; display: flex; flex-direction: column; justify-content: center;">
+                            <span style="font-size: 1.2rem; font-weight: bold; line-height: 1.2;">{{ r.fechaReserva |
+                                date:'d' }}</span>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; line-height: 1.2;">{{
+                                r.fechaReserva | date:'MMM' }}</span>
+                            <span style="font-size: 0.7rem; opacity: 0.85; line-height: 1.2;">{{ r.fechaReserva |
+                                date:'yyyy' }}</span>
                         </div>
                         <div style="display: flex; flex-direction: column; justify-content: center;">
                             <h3
@@ -80,7 +83,7 @@
                 <div class="res-footer"
                     style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid #f0f0f0; padding-top: 1rem;">
                     <span class="status-badge" [ngClass]="getColorStatus(r.estado)">{{ r.estado }}</span>
-                    <div class="res-actions" *ngIf="r.estado === 'PENDIENTE' || r.estado === 'CONFIRMADA'">
+                    <div class="res-actions" *ngIf="canCancel(r)">
                         <button class="btn-cancel-res" (click)="cancelarReserva(r.id)"
                             style="border: 1px solid var(--ion-color-danger); color: var(--ion-color-danger); background: transparent; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer;">
                             Cancelar

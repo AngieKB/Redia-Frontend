@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
+import Swal from 'sweetalert2';
 
 import { ReservationService } from '../../../core/services/reservation.service';
 import { Reservation } from '../../../models/reservation.model';
@@ -58,19 +59,51 @@ export class MyReservations implements OnInit {
     this.filterStatus = status;
   }
 
+  canCancel(r: Reservation): boolean {
+    const cancelableStatuses = ['SOLICITADA', 'CONFIRMADA'];
+    if (!cancelableStatuses.includes(r.estado?.toUpperCase())) return false;
+    const reservationTime = new Date(r.fechaReserva).getTime();
+    const now = Date.now();
+    const hoursUntil = (reservationTime - now) / (1000 * 60 * 60);
+    return hoursUntil >= 24;
+  }
+
   cancelarReserva(id: string) {
-    if (confirm(`¿Deseas cancelar esta reserva de forma irreversible?`)) {
-      this.reservationService.cancelReservation(id).subscribe({
-        next: () => this.loadMyReservations(),
-        error: (err) => alert('Error al cancelar: ' + (err?.error?.message || err?.error || ''))
-      });
-    }
+    Swal.fire({
+      title: '¿Cancelar reserva?',
+      text: 'Esta acción es irreversible. ¿Seguro que deseas cancelar esta reserva?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#bd1b5b',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.reservations = this.reservations.filter(r => r.id !== id);
+        this.reservationService.cancelReservation(id).subscribe({
+          next: () => {
+            this.loadMyReservations();
+            Swal.fire({
+              title: '¡Cancelada!',
+              text: 'Tu reserva ha sido cancelada.',
+              icon: 'success',
+              confirmButtonColor: '#bd1b5b'
+            });
+          },
+          error: (err) => {
+            this.loadMyReservations();
+            Swal.fire('Error', 'No se pudo cancelar la reserva: ' + (err?.error?.message || ''), 'error');
+          }
+        });
+      }
+    });
   }
 
   getColorStatus(status: string) {
     if (!status) return 'status-default';
     switch (status.toUpperCase()) {
-      case 'PENDIENTE': return 'status-solicitada';
+      case 'SOLICITADA': return 'status-solicitada';
       case 'CONFIRMADA': return 'status-confirmada';
       case 'CANCELADA': return 'status-cancelada';
       case 'RECHAZADA': return 'status-rechazada';

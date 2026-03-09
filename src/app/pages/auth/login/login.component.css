@@ -24,7 +24,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  background: linear-gradient(135deg, var(--ion-background-color) 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--ion-background-color) 0%, var(--ion-card-background) 100%);
 }
 
 .auth-container h2 {

@@ -43,7 +43,9 @@ body {
   background-color: var(--ion-background-color);
   color: var(--ion-text-color);
   min-height: 100vh;
-  font-size: calc(16px * var(--a11y-font-multiplier));
+  /* Font size scales with multiplier, but only if zoom is not supported or as a base */
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Accessibility Modes */
@@ -57,13 +59,37 @@ body.a11y-high-contrast {
   --ion-card-background: #000000;
   --ion-item-background: #000000;
 
-  /* Override borders globally for high contrast */
+  /* Force backgrounds on known containers */
+  .auth-container,
+  .page-container,
+  .main-content,
+  form,
+  .stat-card,
+  .action-card {
+    background: #000000 !important;
+    border: 3px solid #FFFF00 !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Override buttons and inputs globally */
   button,
   input,
   select,
   .card,
   .profile-dropdown .dropdown-menu {
     border: 2px solid #FFFF00 !important;
+    background: #000000 !important;
+    color: #FFFFFF !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  span,
+  label {
+    color: #FFFFFF !important;
   }
 }
 
@@ -80,6 +106,41 @@ body.a11y-dark {
   --ion-item-background: #1e1e1e;
   --ion-color-light: #2c2c2c;
   --ion-color-medium: #999999;
+
+  /* Dark mode backgrounds for auth and other pages */
+  .auth-container {
+    background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%) !important;
+  }
+
+  .stat-card,
+  .action-card,
+  .form-card,
+  .table-wrapper,
+  .reservation-card,
+  .empty-state,
+  form {
+    background-color: var(--ion-card-background) !important;
+    border-color: #333 !important;
+  }
+
+  .page-header {
+    background: linear-gradient(135deg, #2c1a29 0%, #2e1a20 100%) !important;
+  }
+
+  input,
+  select {
+    background-color: #2c2c2c !important;
+    border-color: #444 !important;
+    color: #e0e0e0 !important;
+  }
+
+  hr {
+    border-color: #444 !important;
+  }
+
+  .links a {
+    color: var(--ion-color-primary) !important;
+  }
 }
 
 input {

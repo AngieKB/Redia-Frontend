@@ -81,6 +81,11 @@ export class AccessibilityComponent {
     if (isPlatformBrowser(this.platformId)) {
       // Apply to <html> element so that rem-based sizes scale correctly
       document.documentElement.style.fontSize = (this.fontSizeMultiplier * 100) + '%';
+      // Apply CSS variable for manual overrides
+      document.documentElement.style.setProperty('--a11y-font-multiplier', this.fontSizeMultiplier.toString());
+      // Apply zoom to body for pixel-based scaling (fallback/complement)
+      (document.body.style as any).zoom = this.fontSizeMultiplier.toString();
+
       this.savePreferences();
     }
   }
@@ -92,6 +97,8 @@ export class AccessibilityComponent {
     this.fontSizeMultiplier = 1;
     if (isPlatformBrowser(this.platformId)) {
       document.documentElement.style.fontSize = '';
+      document.documentElement.style.setProperty('--a11y-font-multiplier', '1');
+      (document.body.style as any).zoom = '1';
       this.savePreferences();
     }
   }
@@ -116,6 +123,8 @@ export class AccessibilityComponent {
     if (parsed.fontSizeMultiplier && parsed.fontSizeMultiplier !== 1) {
       this.fontSizeMultiplier = parsed.fontSizeMultiplier;
       document.documentElement.style.fontSize = (this.fontSizeMultiplier * 100) + '%';
+      document.documentElement.style.setProperty('--a11y-font-multiplier', this.fontSizeMultiplier.toString());
+      (document.body.style as any).zoom = this.fontSizeMultiplier.toString();
     }
   }
 }

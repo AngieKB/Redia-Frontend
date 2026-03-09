@@ -6,6 +6,8 @@ import { NavbarComponent } from '../../../shared/navbar/navbar.component'
 import { FooterComponent } from '../../../shared/footer/footer.component'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 
+import { environment } from '../../../../environments/environment'
+
 @Component({
     selector: 'app-complete-google-profile',
     standalone: true,
@@ -35,7 +37,7 @@ export class CompleteGoogleProfileComponent implements OnInit {
     userEmail = ''
     userPhoto = ''
 
-    private apiUrl = 'http://localhost:8080/api/auth'
+    private apiUrl = `${environment.apiUrlBase}/auth`
 
     constructor(
         private router: Router,

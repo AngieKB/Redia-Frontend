@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DinningTable } from '../../models/table.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TableService {
-    private apiUrl = 'http://localhost:8080/api/admin/dinning-tables';
+    private apiUrl = `${environment.apiUrlBase}/admin/dinning-tables`;
 
     constructor(private http: HttpClient) { }
 

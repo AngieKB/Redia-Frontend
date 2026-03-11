@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "Redia-Frontendd": {
+    "redia-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Redia-Frontendd:build:production"
+              "buildTarget": "redia-frontend:build:production"
             },
             "development": {
-              "buildTarget": "Redia-Frontendd:build:development"
+              "buildTarget": "redia-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -12,4 +12,13 @@ export interface CreateReservationRequest {
     fechaReserva: string;
     horaFinReserva: string;
     numeroPersonas: number;
+    tableIds?: string[];
 }
+
+export interface TableAvailability {
+    id: string;
+    nombre: string;
+    capacidad: number;
+    disponible: boolean;
+}
+

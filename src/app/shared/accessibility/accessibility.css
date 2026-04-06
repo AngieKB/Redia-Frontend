@@ -3,10 +3,10 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
-    background: var(--ion-color-secondary);
+    background: #005A9C;
     color: white;
     border: none;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -25,6 +25,11 @@
 
 .a11y-fab:active {
     transform: scale(0.95);
+}
+
+.a11y-fab svg {
+    width: 48px !important;
+    height: 48px !important;
 }
 
 /* Backdrop */

@@ -70,4 +70,11 @@ export class ReservationService {
     getTablesForReservations(): Observable<{ id: string; nombre: string; capacidad: number }[]> {
         return this.http.get<{ id: string; nombre: string; capacidad: number }[]>(`${this.apiUrl}/tables`);
     }
+
+    /** Returns tables availability for reservation mapping */
+    getMesasDisponibles(inicio: string, fin: string): Observable<import('../../models/reservation.model').TableAvailability[]> {
+        return this.http.get<import('../../models/reservation.model').TableAvailability[]>(
+            `${this.apiUrl}/mesas-disponibles?inicio=${encodeURIComponent(inicio)}&fin=${encodeURIComponent(fin)}`
+        );
+    }
 }

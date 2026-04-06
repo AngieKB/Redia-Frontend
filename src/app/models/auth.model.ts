@@ -20,6 +20,12 @@ export interface AuthResponse {
     nombre: string
     telefono: string
     fotoUrl: string
+    requiresTwoFactor?: boolean
+}
+
+export interface TwoFactorVerifyRequest {
+    email: string
+    code: number
 }
 
 export interface RefreshTokenRequest {

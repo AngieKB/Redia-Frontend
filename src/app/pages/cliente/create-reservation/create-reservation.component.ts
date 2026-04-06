@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { TableAvailability } from '../../../models/reservation.model';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 
@@ -25,14 +26,11 @@ const FESTIVOS_COLOMBIA_2026: Set<string> = new Set([
 export class CreateReservation implements OnInit {
 
   fecha = '';
-  horaEntrada = '';
-  horaSalida = '';
+  intervaloSeleccionado = '';
   numeroPersonas: number | null = null;
 
   minDate = '';
-  minHoraEntrada = '08:00';
-  maxHoraEntrada = '22:00';
-  maxHoraSalida = '22:00';
+  intervalos: { label: string, entrada: string, salida: string }[] = [];
 
   isLoading = false;
   errorMessage = '';
@@ -40,10 +38,14 @@ export class CreateReservation implements OnInit {
 
   errors = {
     fecha: '',
-    horaEntrada: '',
-    horaSalida: '',
+    intervalo: '',
     personas: ''
   };
+
+  mesas: TableAvailability[] = [];
+  mesasSeleccionadas: string[] = [];
+  mostrarMapa = false;
+  isFetchingTables = false;
 
   private readonly MAX_PERSONAS = 32;
 
@@ -61,13 +63,14 @@ export class CreateReservation implements OnInit {
 
   onFechaChange() {
     this.errors.fecha = '';
-    this.horaEntrada = '';
-    this.horaSalida = '';
+    this.intervaloSeleccionado = '';
+    this.mostrarMapa = false;
+    this.intervalos = [];
 
     if (!this.fecha) return;
 
     const date = new Date(this.fecha + 'T00:00:00');
-    const dow = date.getDay(); // 0 = Sunday, 6 = Saturday
+    let dow = date.getDay(); // 0 = Sunday, 6 = Saturday
 
     if (dow === 0) {
       this.errors.fecha = 'No se permiten reservas los domingos.';
@@ -81,56 +84,25 @@ export class CreateReservation implements OnInit {
       return;
     }
 
-    // Update hour boundaries
-    if (dow === 6) {
-      // Saturday
-      this.maxHoraEntrada = '16:00';
-      this.maxHoraSalida = '16:00';
-    } else {
-      // Mon–Fri
-      this.maxHoraEntrada = '22:00';
-      this.maxHoraSalida = '22:00';
+    const maxH = (dow === 6) ? 16 : 22;
+    for (let h = 8; h < maxH; h += 2) {
+      const eH = String(h).padStart(2, '0');
+      const sH = String(h + 2).padStart(2, '0');
+      this.intervalos.push({
+        label: `${eH}:00 - ${sH}:00`,
+        entrada: `${eH}:00`,
+        salida: `${sH}:00`
+      });
     }
   }
 
-  onHoraEntradaChange() {
-    this.errors.horaEntrada = '';
-    this.horaSalida = '';
-    if (!this.horaEntrada) return;
-
-    const [h, m] = this.horaEntrada.split(':').map(Number);
-
-    // Suggest end time = entrada + 1 hour (within 3h max)
-    const suggestTotalMin = h * 60 + m + 60;
-    const maxEndMin = h * 60 + m + 180;
-    const limitMin = this.maxHoraSalida === '16:00' ? 16 * 60 : 22 * 60;
-    const clampedMin = Math.min(suggestTotalMin, limitMin);
-
-    const eH = Math.floor(clampedMin / 60);
-    const eM = clampedMin % 60;
-    this.horaSalida = `${String(eH).padStart(2, '0')}:${String(eM).padStart(2, '0')}`;
-  }
-
-  /** Computes the max allowed horaSalida given horaEntrada (entrada + 3h, capped at business close) */
-  get maxHoraSalidaField(): string {
-    if (!this.horaEntrada) return this.maxHoraSalida;
-    const [h, m] = this.horaEntrada.split(':').map(Number);
-    const closeMin = this.maxHoraSalida === '16:00' ? 16 * 60 : 22 * 60;
-    const plus3 = h * 60 + m + 180;
-    const capped = Math.min(plus3, closeMin);
-    return `${String(Math.floor(capped / 60)).padStart(2, '0')}:${String(capped % 60).padStart(2, '0')}`;
-  }
-
-  /** Min allowed horaSalida = entrada + 1 minute */
-  get minHoraSalidaField(): string {
-    if (!this.horaEntrada) return '08:01';
-    const [h, m] = this.horaEntrada.split(':').map(Number);
-    const next = h * 60 + m + 1;
-    return `${String(Math.floor(next / 60)).padStart(2, '0')}:${String(next % 60).padStart(2, '0')}`;
+  onIntervaloChange() {
+    this.errors.intervalo = '';
+    this.mostrarMapa = false;
   }
 
   validate(): boolean {
-    this.errors = { fecha: '', horaEntrada: '', horaSalida: '', personas: '' };
+    this.errors = { fecha: '', intervalo: '', personas: '' };
     let ok = true;
 
     if (!this.fecha) {
@@ -138,28 +110,9 @@ export class CreateReservation implements OnInit {
       ok = false;
     }
 
-    if (!this.horaEntrada) {
-      this.errors.horaEntrada = 'Selecciona la hora de entrada.';
+    if (!this.intervaloSeleccionado) {
+      this.errors.intervalo = 'Selecciona un intervalo horario.';
       ok = false;
-    }
-
-    if (!this.horaSalida) {
-      this.errors.horaSalida = 'Selecciona la hora de salida.';
-      ok = false;
-    }
-
-    if (this.horaEntrada && this.horaSalida) {
-      const [sh, sm] = this.horaEntrada.split(':').map(Number);
-      const [eh, em] = this.horaSalida.split(':').map(Number);
-      const durMin = (eh * 60 + em) - (sh * 60 + sm);
-
-      if (durMin <= 0) {
-        this.errors.horaSalida = 'La hora de salida debe ser posterior a la entrada.';
-        ok = false;
-      } else if (durMin > 180) {
-        this.errors.horaSalida = 'La reserva no puede durar más de 3 horas.';
-        ok = false;
-      }
     }
 
     if (!this.numeroPersonas || this.numeroPersonas <= 0) {
@@ -173,20 +126,95 @@ export class CreateReservation implements OnInit {
     return ok;
   }
 
+  fetchDisponibilidadMesas() {
+    if (!this.validate()) return;
+    
+    this.isFetchingTables = true;
+    this.mostrarMapa = false;
+    
+    const selected = this.intervalos.find(i => i.label === this.intervaloSeleccionado);
+    if (!selected) return;
+
+    const inicio = `${this.fecha}T${selected.entrada}:00`;
+    const fin = `${this.fecha}T${selected.salida}:00`;
+    
+    this.reservationService.getMesasDisponibles(inicio, fin).subscribe({
+      next: (mesas) => {
+        this.mesas = mesas;
+        this.mesasSeleccionadas = [];
+        this.mostrarMapa = true;
+        this.isFetchingTables = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isFetchingTables = false;
+        this.errorMessage = 'Error obteniendo mesas. Inténtalo de nuevo.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  getMesaByNombre(nombre: string): TableAvailability | undefined {
+    return this.mesas.find(m => m.nombre === nombre);
+  }
+
+  isMesaDisponible(nombreMesa: string): boolean {
+    const mesa = this.getMesaByNombre(nombreMesa);
+    return mesa ? mesa.disponible : false;
+  }
+
+  isMesaSeleccionada(nombreMesa: string): boolean {
+    const mesa = this.getMesaByNombre(nombreMesa);
+    return mesa ? this.mesasSeleccionadas.includes(mesa.id) : false;
+  }
+
+  seleccionarMesa(nombreMesa: string) {
+    const mesa = this.getMesaByNombre(nombreMesa);
+    if (!mesa || !mesa.disponible) return;
+    
+    const index = this.mesasSeleccionadas.indexOf(mesa.id);
+    if (index > -1) {
+      this.mesasSeleccionadas.splice(index, 1);
+    } else {
+      this.mesasSeleccionadas.push(mesa.id);
+    }
+  }
+
+  get totalCapacidadSeleccionada(): number {
+    return this.mesas
+      .filter(m => this.mesasSeleccionadas.includes(m.id))
+      .reduce((sum, m) => sum + m.capacidad, 0);
+  }
+
   onSubmit() {
     this.errorMessage = '';
     this.successMessage = '';
     if (!this.validate()) return;
 
+    if (!this.mostrarMapa) {
+      this.fetchDisponibilidadMesas();
+      return;
+    }
+
+    if (this.mesasSeleccionadas.length === 0) {
+      this.errorMessage = 'Debes seleccionar al menos una mesa en el mapa.';
+      return;
+    }
+
+    if (this.totalCapacidadSeleccionada < (this.numeroPersonas || 0)) {
+      this.errorMessage = `Las mesas que seleccionaste solo tienen capacidad para ${this.totalCapacidadSeleccionada} personas, pero indicaste ${this.numeroPersonas}.`;
+      return;
+    }
+
     this.isLoading = true;
 
-    const fechaReserva = `${this.fecha}T${this.horaEntrada}:00`;
-    const horaFinReserva = `${this.fecha}T${this.horaSalida}:00`;
-
+    const selected = this.intervalos.find(i => i.label === this.intervaloSeleccionado);
+    
     const body = {
-      fechaReserva,
-      horaFinReserva,
-      numeroPersonas: this.numeroPersonas as number
+      fechaReserva: `${this.fecha}T${selected!.entrada}:00`,
+      horaFinReserva: `${this.fecha}T${selected!.salida}:00`,
+      numeroPersonas: this.numeroPersonas as number,
+      tableIds: this.mesasSeleccionadas
     };
 
     this.reservationService.createReservation(body).subscribe({

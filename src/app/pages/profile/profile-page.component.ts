@@ -49,6 +49,16 @@ export class ProfilePage implements OnInit {
     confirmar: ''
   };
 
+  // 2FA state
+  twoFactorEnabled = false;
+  twoFactorSetupMode = false;
+  twoFactorQrUrl = '';
+  twoFactorSecret = '';
+  twoFactorConfirmCode = '';
+  twoFactorConfirmError = '';
+  twoFactorLoading = false;
+  twoFactorSuccessMsg = '';
+
   constructor(
     private location: Location,
     private alertService: AlertService,
@@ -64,6 +74,7 @@ export class ProfilePage implements OnInit {
     this.user.rol = localStorage.getItem('role') || 'CLIENTE';
     this.user.fotoUrl = localStorage.getItem('fotoUrl') || '';
     this.editUser = { ...this.user };
+    this.twoFactorEnabled = localStorage.getItem('twoFactorEnabled') === 'true';
   }
 
   goBack() {
@@ -238,5 +249,73 @@ export class ProfilePage implements OnInit {
       }
     }
     return fallback;
+  }
+
+  // 2FA Methods
+  setup2FA() {
+    this.twoFactorLoading = true;
+    this.twoFactorConfirmError = '';
+    this.twoFactorSuccessMsg = '';
+    this.authService.setup2FA().subscribe({
+      next: (res) => {
+        this.twoFactorLoading = false;
+        this.twoFactorQrUrl = res.qrCodeUrl;
+        this.twoFactorSecret = res.secret;
+        this.twoFactorSetupMode = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.twoFactorLoading = false;
+        this.twoFactorConfirmError = this.getBackendError(err, 'Error al iniciar la configuración 2FA.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  enable2FA() {
+    const code = parseInt(this.twoFactorConfirmCode, 10);
+    if (!this.twoFactorConfirmCode || isNaN(code)) {
+      this.twoFactorConfirmError = 'Introduce el código de 6 dígitos de la app.';
+      return;
+    }
+    this.twoFactorLoading = true;
+    this.twoFactorConfirmError = '';
+    this.authService.enable2FA(code).subscribe({
+      next: () => {
+        this.twoFactorLoading = false;
+        this.twoFactorEnabled = true;
+        this.twoFactorSetupMode = false;
+        this.twoFactorQrUrl = '';
+        this.twoFactorConfirmCode = '';
+        localStorage.setItem('twoFactorEnabled', 'true');
+        this.twoFactorSuccessMsg = '¡Verificación de dos pasos activada exitosamente!';
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.twoFactorLoading = false;
+        this.twoFactorConfirmError = this.getBackendError(err, 'Código incorrecto. Inténtalo de nuevo.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  disable2FA() {
+    if (!confirm('¿Estás seguro de que deseas desactivar la verificación de dos pasos?')) return;
+    this.twoFactorLoading = true;
+    this.authService.disable2FA().subscribe({
+      next: () => {
+        this.twoFactorLoading = false;
+        this.twoFactorEnabled = false;
+        this.twoFactorSetupMode = false;
+        localStorage.setItem('twoFactorEnabled', 'false');
+        this.twoFactorSuccessMsg = 'Verificación de dos pasos desactivada.';
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.twoFactorLoading = false;
+        this.twoFactorConfirmError = this.getBackendError(err, 'Error al desactivar el 2FA.');
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

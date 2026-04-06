@@ -127,4 +127,33 @@ export class AuthService {
         return !!localStorage.getItem('accessToken')
     }
 
+    // 2FA Methods
+    setup2FA(): Observable<{ qrCodeUrl: string; secret: string }> {
+        const token = this.getToken()
+        return this.http.post<{ qrCodeUrl: string; secret: string }>(
+            `${this.apiUrl}/2fa/setup`, {},
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+    }
+
+    enable2FA(code: number): Observable<string> {
+        const token = this.getToken()
+        return this.http.post<string>(
+            `${this.apiUrl}/2fa/enable`, { code },
+            { headers: { Authorization: `Bearer ${token}` }, responseType: 'text' as 'json' }
+        )
+    }
+
+    disable2FA(): Observable<string> {
+        const token = this.getToken()
+        return this.http.post<string>(
+            `${this.apiUrl}/2fa/disable`, {},
+            { headers: { Authorization: `Bearer ${token}` }, responseType: 'text' as 'json' }
+        )
+    }
+
+    verifyTwoFactor(email: string, code: number): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/2fa/verify`, { email, code })
+    }
+
 }

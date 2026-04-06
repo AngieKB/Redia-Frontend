@@ -30,6 +30,13 @@ export class LoginComponent implements OnInit {
         password: ''
     }
 
+    // 2FA state
+    requiresTwoFactor = false
+    twoFactorEmail = ''
+    twoFactorCode = ''
+    twoFactorError = ''
+    twoFactorLoading = false
+
     constructor(
         private authService: AuthService,
         private router: Router,
@@ -48,13 +55,19 @@ export class LoginComponent implements OnInit {
             return;
         }
 
+        const buttonDiv = document.getElementById("google-buttonDiv");
+        if (!buttonDiv) {
+            setTimeout(() => this.initializeGoogleSignIn(), 100);
+            return;
+        }
+
         google.accounts.id.initialize({
             client_id: '115728163825-koff0lsutk5h271dlck8s23rnt37sq42.apps.googleusercontent.com',
             callback: this.handleGoogleCredentialResponse.bind(this)
         });
 
         google.accounts.id.renderButton(
-            document.getElementById("google-buttonDiv"),
+            buttonDiv,
             { theme: "outline", size: "large", width: "100%", text: "continue_with" }
         );
     }
@@ -64,6 +77,14 @@ export class LoginComponent implements OnInit {
             this.ngZone.run(() => {
                 this.authService.googleLogin(response.credential).subscribe({
                     next: (res: any) => {
+
+                        if (res.requiresTwoFactor) {
+                            this.requiresTwoFactor = true;
+                            this.twoFactorEmail = res.email;
+                            this.cdr.detectChanges();
+                            return;
+                        }
+
                         localStorage.setItem('accessToken', res.accessToken)
                         localStorage.setItem('refreshToken', res.refreshToken)
                         localStorage.setItem('role', res.role)
@@ -87,11 +108,12 @@ export class LoginComponent implements OnInit {
                         }
                     },
                     error: (err) => {
-                        this.errorMessage = this.getBackendError(err, 'Error con el inicio de sesión de Google. Inténtalo de nuevo.');
-                        this.cdr.detectChanges();
+                        this.errorMessage = this.getBackendError(err, 'Error iniciando sesión con Google')
+                        this.cdr.detectChanges()
+                        console.error('Error Google Login:', err)
                     }
-                });
-            });
+                })
+            })
         }
     }
 
@@ -127,21 +149,15 @@ export class LoginComponent implements OnInit {
         this.authService.login(data).subscribe({
             next: (res: AuthResponse) => {
 
-                localStorage.setItem('accessToken', res.accessToken)
-                localStorage.setItem('refreshToken', res.refreshToken)
-                localStorage.setItem('role', res.role)
-                localStorage.setItem('email', res.email)
-                if (res.nombre) localStorage.setItem('nombre', res.nombre)
-                if (res.telefono) localStorage.setItem('telefono', res.telefono)
-                if (res.fotoUrl) localStorage.setItem('fotoUrl', res.fotoUrl)
-
-                if (res.role === 'ADMINISTRADOR') {
-                    this.router.navigate(['/admin/dashboard'])
-                } else if (res.role === 'RECEPCIONISTA') {
-                    this.router.navigate(['/recepcionista/dashboard'])
-                } else {
-                    this.router.navigate(['/cliente/my-reservations'])
+                // If 2FA is required, show the 2FA screen
+                if (res.requiresTwoFactor) {
+                    this.requiresTwoFactor = true;
+                    this.twoFactorEmail = res.email;
+                    this.cdr.detectChanges();
+                    return;
                 }
+
+                this.completeLogin(res);
 
             },
             error: err => {
@@ -161,6 +177,47 @@ export class LoginComponent implements OnInit {
                 console.error(err)
             }
         })
+    }
+
+    submitTwoFactorCode() {
+        this.twoFactorError = ''
+        const code = parseInt(this.twoFactorCode, 10);
+
+        if (!this.twoFactorCode || isNaN(code)) {
+            this.twoFactorError = 'Introduce un código válido de 6 dígitos.';
+            return;
+        }
+
+        this.twoFactorLoading = true;
+        this.authService.verifyTwoFactor(this.twoFactorEmail, code).subscribe({
+            next: (res: AuthResponse) => {
+                this.twoFactorLoading = false;
+                this.completeLogin(res);
+            },
+            error: err => {
+                this.twoFactorLoading = false;
+                this.twoFactorError = this.getBackendError(err, 'Código incorrecto o expirado. Inténtalo de nuevo.');
+                this.cdr.detectChanges();
+            }
+        });
+    }
+
+    private completeLogin(res: AuthResponse) {
+        localStorage.setItem('accessToken', res.accessToken)
+        localStorage.setItem('refreshToken', res.refreshToken)
+        localStorage.setItem('role', res.role)
+        localStorage.setItem('email', res.email)
+        if (res.nombre) localStorage.setItem('nombre', res.nombre)
+        if (res.telefono) localStorage.setItem('telefono', res.telefono)
+        if (res.fotoUrl) localStorage.setItem('fotoUrl', res.fotoUrl)
+
+        if (res.role === 'ADMINISTRADOR') {
+            this.router.navigate(['/admin/dashboard'])
+        } else if (res.role === 'RECEPCIONISTA') {
+            this.router.navigate(['/recepcionista/dashboard'])
+        } else {
+            this.router.navigate(['/cliente/my-reservations'])
+        }
     }
 
     private getBackendError(err: any, fallback: string): string {

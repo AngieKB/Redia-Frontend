@@ -238,3 +238,52 @@
     font-weight: 500;
     margin-top: 4px;
 }
+
+/* 2FA Profiler Styles */
+.twofa-status-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+}
+
+.twofa-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.twofa-info {
+    flex: 1;
+}
+
+.twofa-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+}
+
+.status-msg {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.status-msg.enabled {
+    color: #4CAF50;
+}
+
+.status-msg.disabled {
+    color: #f44336;
+}
+
+.qr-image {
+    width: 200px;
+    height: 200px;
+    margin: 10px auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background: white;
+}

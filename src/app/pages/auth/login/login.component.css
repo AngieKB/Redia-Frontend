@@ -125,3 +125,71 @@ form button:active {
   border-radius: 8px;
   padding: 10px 14px;
 }
+
+/* 2FA Screen */
+.twofa-container {
+  background: var(--ion-card-background);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(97, 45, 83, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.twofa-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--ion-color-primary);
+}
+
+.twofa-container h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin-bottom: 10px;
+}
+
+.twofa-subtitle {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.twofa-input {
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 0.5rem;
+  font-weight: 700;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--ion-color-primary);
+  border-radius: 12px;
+  color: var(--ion-color-primary);
+}
+
+.twofa-container button {
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  width: 100%;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.twofa-container button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(97, 45, 83, 0.3);
+}
+
+.twofa-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

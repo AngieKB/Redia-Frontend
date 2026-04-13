@@ -6,6 +6,20 @@ import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 import { ReservationService } from '../../../core/services/reservation.service';
 
+// Mesas predeterminadas del restaurante (fijas, sin gestión desde admin)
+const MESAS_PREDETERMINADAS: { id: string; nombre: string; capacidad: number }[] = [
+  { id: '1', nombre: '1', capacidad: 2 },
+  { id: '2', nombre: '2', capacidad: 2 },
+  { id: '3', nombre: '3', capacidad: 4 },
+  { id: '4', nombre: '4', capacidad: 4 },
+  { id: '5', nombre: '5', capacidad: 4 },
+  { id: '6', nombre: '6', capacidad: 4 },
+  { id: '7', nombre: '7', capacidad: 4 },
+  { id: '8', nombre: '8', capacidad: 4 },
+  { id: '9', nombre: '9', capacidad: 2 },
+  { id: '10', nombre: '10', capacidad: 2 },
+];
+
 @Component({
   selector: 'app-dashboard-recepcionista',
   standalone: true,
@@ -22,7 +36,7 @@ export class DashboardRecepcionista implements OnInit {
 
   get reservasTotal() { return this.reservasHoy.length; }
   get reservasConfirmadas() { return this.reservasHoy.filter(r => r.estado?.toUpperCase() === 'CONFIRMADA').length; }
-  get reservasSolicitadas() { return this.reservasHoy.filter(r => r.estado?.toUpperCase() === 'SOLICITADA').length; }
+  get reservasCanceladas() { return this.reservasHoy.filter(r => r.estado?.toUpperCase() === 'CANCELADA').length; }
   get totalMesas() { return this.mesas.length; }
 
   constructor(
@@ -37,15 +51,8 @@ export class DashboardRecepcionista implements OnInit {
   loadData() {
     this.isLoading = true;
 
-    // Load tables
-    this.reservationService.getTablesForReservations().subscribe({
-      next: (tables) => {
-        const sortedTables = (tables as any[]).sort((a, b) => a.nombre.localeCompare(b.nombre));
-        this.mesas = sortedTables;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error cargando mesas:', err)
-    });
+    // Mesas fijas — no se cargan desde el API
+    this.mesas = MESAS_PREDETERMINADAS;
 
     // Load today's reservations
     this.reservationService.getAllReservations().subscribe({
@@ -80,9 +87,7 @@ export class DashboardRecepcionista implements OnInit {
     if (!estado) return '';
     const map: Record<string, string> = {
       CONFIRMADA: 'status-confirmada',
-      SOLICITADA: 'status-solicitada',
       CANCELADA: 'status-cancelada',
-      RECHAZADA: 'status-rechazada',
       FINALIZADA: 'status-finalizada',
     };
     return map[estado?.toUpperCase()] ?? '';

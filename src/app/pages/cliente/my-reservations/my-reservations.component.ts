@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import { ReservationService } from '../../../core/services/reservation.service';
 import { Reservation } from '../../../models/reservation.model';
 
-type ReservationStatus = 'SOLICITADA' | 'CONFIRMADA' | 'RECHAZADA' | 'CANCELADA' | 'FINALIZADA';
+type ReservationStatus = 'CONFIRMADA' | 'CANCELADA' | 'FINALIZADA';
 
 @Component({
   selector: 'app-my-reservations',
@@ -60,7 +60,7 @@ export class MyReservations implements OnInit {
   }
 
   canCancel(r: Reservation): boolean {
-    const cancelableStatuses = ['SOLICITADA', 'CONFIRMADA'];
+    const cancelableStatuses = ['CONFIRMADA'];
     if (!cancelableStatuses.includes(r.estado?.toUpperCase())) return false;
     const reservationTime = new Date(r.fechaReserva).getTime();
     const now = Date.now();
@@ -103,10 +103,9 @@ export class MyReservations implements OnInit {
   getColorStatus(status: string) {
     if (!status) return 'status-default';
     switch (status.toUpperCase()) {
-      case 'SOLICITADA': return 'status-solicitada';
+
       case 'CONFIRMADA': return 'status-confirmada';
       case 'CANCELADA': return 'status-cancelada';
-      case 'RECHAZADA': return 'status-rechazada';
       case 'FINALIZADA': return 'status-finalizada';
       default: return 'status-default';
     }

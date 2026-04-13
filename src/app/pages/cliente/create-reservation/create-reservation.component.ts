@@ -5,8 +5,22 @@ import { RouterModule, Router } from '@angular/router';
 import { TableAvailability } from '../../../models/reservation.model';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
-
 import { ReservationService } from '../../../core/services/reservation.service';
+
+// Mesas predeterminadas del restaurante
+// Mesas 1,2,9,10 = 2 personas | Mesas 3,4,5,6,7,8 = 4 personas
+const MESAS_PREDETERMINADAS: { svgId: string; capacidad: number }[] = [
+  { svgId: '1', capacidad: 2 },
+  { svgId: '2', capacidad: 2 },
+  { svgId: '3', capacidad: 4 },
+  { svgId: '4', capacidad: 4 },
+  { svgId: '5', capacidad: 4 },
+  { svgId: '6', capacidad: 4 },
+  { svgId: '7', capacidad: 4 },
+  { svgId: '8', capacidad: 4 },
+  { svgId: '9', capacidad: 2 },
+  { svgId: '10', capacidad: 2 },
+];
 
 // Colombian holidays for 2026 (YYYY-MM-DD)
 const FESTIVOS_COLOMBIA_2026: Set<string> = new Set([
@@ -128,25 +142,44 @@ export class CreateReservation implements OnInit {
 
   fetchDisponibilidadMesas() {
     if (!this.validate()) return;
-    
+
     this.isFetchingTables = true;
     this.mostrarMapa = false;
-    
+
     const selected = this.intervalos.find(i => i.label === this.intervaloSeleccionado);
     if (!selected) return;
 
     const inicio = `${this.fecha}T${selected.entrada}:00`;
     const fin = `${this.fecha}T${selected.salida}:00`;
-    
+
     this.reservationService.getMesasDisponibles(inicio, fin).subscribe({
-      next: (mesas) => {
-        this.mesas = mesas;
+      next: (mesasBackend) => {
+        // Normalize the backend response against the predefined list.
+        // For each predefined table, find its backend entry by flexible name matching.
+        // If the backend doesn't return it (table not created in DB), treat it as available.
+        this.mesas = MESAS_PREDETERMINADAS.map(predef => {
+          const match = mesasBackend.find(m => {
+            const n = (m.nombre || '').trim().toLowerCase();
+            return n === predef.svgId || n === 'mesa ' + predef.svgId;
+          });
+          if (match) {
+            // Return the backend record but ensure nombre equals the SVG id for easy lookup
+            return { ...match, nombre: predef.svgId };
+          }
+          // Not found in backend — treat as available with predefined capacity
+          return {
+            id: predef.svgId,
+            nombre: predef.svgId,
+            capacidad: predef.capacidad,
+            disponible: true
+          };
+        });
         this.mesasSeleccionadas = [];
         this.mostrarMapa = true;
         this.isFetchingTables = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (_err) => {
         this.isFetchingTables = false;
         this.errorMessage = 'Error obteniendo mesas. Inténtalo de nuevo.';
         this.cdr.detectChanges();
@@ -154,8 +187,12 @@ export class CreateReservation implements OnInit {
     });
   }
 
-  getMesaByNombre(nombre: string): TableAvailability | undefined {
-    return this.mesas.find(m => m.nombre === nombre);
+  /**
+   * Finds a mesa from the normalized list by its SVG id (e.g. '1', '2', ...'10').
+   * After fetchDisponibilidadMesas runs, all names are normalized to the SVG id format.
+   */
+  getMesaByNombre(svgId: string): TableAvailability | undefined {
+    return this.mesas.find(m => m.nombre === svgId);
   }
 
   isMesaDisponible(nombreMesa: string): boolean {
@@ -171,11 +208,21 @@ export class CreateReservation implements OnInit {
   seleccionarMesa(nombreMesa: string) {
     const mesa = this.getMesaByNombre(nombreMesa);
     if (!mesa || !mesa.disponible) return;
-    
+
     const index = this.mesasSeleccionadas.indexOf(mesa.id);
     if (index > -1) {
+      // Deseleccionar siempre está permitido
       this.mesasSeleccionadas.splice(index, 1);
     } else {
+      // Verificar que agregar esta mesa no exceda las personas en más de 2
+      const capacidadConNuevaMesa = this.totalCapacidadSeleccionada + mesa.capacidad;
+      const personas = this.numeroPersonas || 0;
+      if (capacidadConNuevaMesa > personas + 2) {
+        this.errorMessage = `No puedes agregar esa mesa: la capacidad total (${capacidadConNuevaMesa}) superaría con creces el número de personas indicado (${personas}).`;
+        this.cdr.detectChanges();
+        return;
+      }
+      this.errorMessage = '';
       this.mesasSeleccionadas.push(mesa.id);
     }
   }
@@ -209,7 +256,7 @@ export class CreateReservation implements OnInit {
     this.isLoading = true;
 
     const selected = this.intervalos.find(i => i.label === this.intervaloSeleccionado);
-    
+
     const body = {
       fechaReserva: `${this.fecha}T${selected!.entrada}:00`,
       horaFinReserva: `${this.fecha}T${selected!.salida}:00`,

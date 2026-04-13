@@ -29,16 +29,13 @@
     <div class="segment-container" style="padding: 1rem; background: var(--ion-background-color);">
         <div class="custom-segment"
             style="display: flex; overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 4px; gap: 4px;">
-            <button class="segment-btn" [class.active]="filterStatus === 'SOLICITADA'"
-                (click)="setFilter('SOLICITADA')">Solicitadas</button>
+
             <button class="segment-btn" [class.active]="filterStatus === 'CONFIRMADA'"
                 (click)="setFilter('CONFIRMADA')">Confirmadas</button>
             <button class="segment-btn" [class.active]="filterStatus === 'FINALIZADA'"
                 (click)="setFilter('FINALIZADA')">Finalizadas</button>
             <button class="segment-btn" [class.active]="filterStatus === 'CANCELADA'"
                 (click)="setFilter('CANCELADA')">Canceladas</button>
-            <button class="segment-btn" [class.active]="filterStatus === 'RECHAZADA'"
-                (click)="setFilter('RECHAZADA')">Rechazadas</button>
         </div>
     </div>
 

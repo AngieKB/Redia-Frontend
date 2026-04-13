@@ -100,13 +100,17 @@
                 <div class="map-section" *ngIf="mostrarMapa" style="margin: 2rem 0; width: 100%;">
                     <div style="text-align: center; margin-bottom: 1rem;">
                         <h3 style="color: white;">Plan de Mesas</h3>
-                        <p style="color: #bbb;">Haz clic en las mesas verdes para seleccionarlas. Has seleccionado {{ totalCapacidadSeleccionada }} cupos.</p>
+                        <p style="color: #bbb;">Haz clic en las mesas <span style="color:#81c784;">verdes</span> para seleccionarlas.
+                            <span [style.color]="totalCapacidadSeleccionada >= (numeroPersonas || 0) ? '#81c784' : '#bbb'">
+                                Cupos seleccionados: {{ totalCapacidadSeleccionada }} / {{ numeroPersonas || 0 }} requeridos.
+                            </span>
+                        </p>
                     </div>
                     <div class="interactive-map" style="background-color: white; border-radius: 8px; overflow: hidden; padding: 10px;">
                                                 <div class="legend-container">
                             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
                                 <span>Plano del Restaurante</span>
-                                <span class="table-count-badge">{{ mesas.length }} Mesas Encontradas</span>
+                                <span class="table-count-badge">10 Mesas</span>
                             </div>
                             <div style="display: flex; gap: 15px; justify-content: center; color: #555;">
                                 <div style="display: flex; align-items: center; gap: 5px;"><span style="width: 15px; height: 15px; background: #e8f5e9; border: 2px solid #4caf50; display: inline-block;"></span> Disponible</div>

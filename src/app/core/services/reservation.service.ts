@@ -62,6 +62,11 @@ export class ReservationService {
         return this.http.put(`${this.apiUrl}/cancel/${id}`, {}, { responseType: 'text' });
     }
 
+    /** Cancela sin restricción de tiempo — solo para recepcionistas */
+    forceCancelReservation(id: string): Observable<any> {
+        return this.http.put(`${this.apiUrl}/force-cancel/${id}`, {}, { responseType: 'text' });
+    }
+
     finishReservation(id: string): Observable<any> {
         return this.http.put(`${this.apiUrl}/finish/${id}`, {}, { responseType: 'text' });
     }

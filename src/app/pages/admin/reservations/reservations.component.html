@@ -47,9 +47,7 @@
                     <label>Estado</label>
                     <select class="filter-input" [(ngModel)]="filtroEstado" (ngModelChange)="applyFilters()">
                         <option value="">Todos</option>
-                        <option value="SOLICITADA">Solicitada</option>
                         <option value="CONFIRMADA">Confirmada</option>
-                        <option value="RECHAZADA">Rechazada</option>
                         <option value="CANCELADA">Cancelada</option>
                         <option value="FINALIZADA">Finalizada</option>
                     </select>
@@ -111,7 +109,7 @@
                         <td>
                             <div class="table-actions">
                                 <button class="btn-table-cancel" (click)="cancelarReserva(r)"
-                                    [disabled]="r.estado === 'CANCELADA' || r.estado === 'FINALIZADA' || r.estado === 'RECHAZADA'">
+                                    [disabled]="r.estado === 'CANCELADA' || r.estado === 'FINALIZADA'">
                                     Cancelar
                                 </button>
                             </div>

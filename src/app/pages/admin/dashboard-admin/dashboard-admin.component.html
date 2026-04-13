@@ -37,11 +37,11 @@
                     <span class="stat-value large">{{ usuariosRegistrados }}</span>
                 </div>
             </div>
-            <div class="stat-card accent">
-                <div class="stat-icon">⏳</div>
+            <div class="stat-card accent" style="border-left-color: #c62828;">
+                <div class="stat-icon">⊘</div>
                 <div class="stat-info">
-                    <span class="stat-label">Reservas Pendientes</span>
-                    <span class="stat-value large">{{ reservasPendientes }}</span>
+                    <span class="stat-label">Reservas Canceladas</span>
+                    <span class="stat-value large" style="color: #c62828;">{{ reservasCanceladas }}</span>
                 </div>
             </div>
         </div>
@@ -54,11 +54,7 @@
                 <span class="action-label">Ver Reservas</span>
                 <span class="action-desc">Consultar todas las reservas</span>
             </button>
-            <button class="action-card secondary" routerLink="/admin/tables">
-                <span class="action-icon">🪑</span>
-                <span class="action-label">Gestionar Mesas</span>
-                <span class="action-desc">Agregar, editar y eliminar mesas</span>
-            </button>
+
             <button class="action-card tertiary" routerLink="/admin/users">
                 <span class="action-icon">👤</span>
                 <span class="action-label">Gestionar Usuarios</span>

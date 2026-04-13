@@ -20,7 +20,7 @@ export class DashboardAdmin implements OnInit {
   reservasHoy = 0;
   reservasMes = 0;
   usuariosRegistrados = 0;
-  reservasPendientes = 0;
+  reservasCanceladas = 0;
 
   constructor(
     private reservationService: ReservationService,
@@ -52,7 +52,7 @@ export class DashboardAdmin implements OnInit {
           return rDate.getMonth() === currentMonth && rDate.getFullYear() === currentYear;
         }).length;
 
-        this.reservasPendientes = reservations.filter(r => r.estado && r.estado.toUpperCase() === 'SOLICITADA').length;
+        this.reservasCanceladas = reservations.filter(r => r.estado && r.estado.toUpperCase() === 'CANCELADA').length;
 
         this.usuariosRegistrados = users.filter(u => u.role && u.role.toUpperCase() === 'CLIENTE').length;
         this.isLoading = false;

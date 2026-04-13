@@ -45,10 +45,6 @@
     font-weight: 600;
 }
 
-.status-solicitada {
-    background: #fff3cd;
-    color: #856404;
-}
 
 .status-confirmada {
     background: #d4edda;
@@ -58,11 +54,6 @@
 .status-cancelada {
     background: #f8d7da;
     color: #721c24;
-}
-
-.status-rechazada {
-    background: #e2e3e5;
-    color: #383d41;
 }
 
 .status-finalizada {

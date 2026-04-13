@@ -41,10 +41,10 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
+                    <div class="stat-icon">⊘</div>
                     <div class="stat-info">
-                        <span class="stat-label">Solicitadas</span>
-                        <span class="stat-value large" style="color:#e65100;">{{ reservasSolicitadas }}</span>
+                        <span class="stat-label">Canceladas</span>
+                        <span class="stat-value large" style="color:#c62828;">{{ reservasCanceladas }}</span>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -57,15 +57,11 @@
             </div>
 
             <!-- Mesa Status Grid -->
-            <h2 class="section-title">Mesas registradas</h2>
-            <div *ngIf="mesas.length === 0" class="empty-state">
-                <span class="empty-icon">🪑</span>
-                <p>No hay mesas registradas.</p>
-            </div>
-            <div class="mesas-grid" *ngIf="mesas.length > 0">
+            <h2 class="section-title">Mesas del restaurante</h2>
+            <div class="mesas-grid">
                 <div *ngFor="let mesa of mesas" class="mesa-card">
                     <span class="mesa-icon">🪑</span>
-                    <span class="mesa-num">{{ mesa.nombre }}</span>
+                    <span class="mesa-num">Mesa {{ mesa.nombre }}</span>
                     <span class="mesa-cap">{{ mesa.capacidad }} personas</span>
                 </div>
             </div>

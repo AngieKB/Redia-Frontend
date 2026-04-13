@@ -45,9 +45,7 @@
                     <label>Estado</label>
                     <select class="filter-input" [(ngModel)]="filtroEstado" (ngModelChange)="applyFilters()">
                         <option value="">Todos</option>
-                        <option value="solicitada">Solicitada</option>
                         <option value="confirmada">Confirmada</option>
-                        <option value="rechazada">Rechazada</option>
                         <option value="cancelada">Cancelada</option>
                         <option value="finalizada">Finalizada</option>
                     </select>
@@ -109,14 +107,6 @@
                         </td>
                         <td>
                             <div class="table-actions">
-                                <button class="btn-confirm" *ngIf="canConfirm(r)" (click)="confirmarReserva(r)"
-                                    title="Confirmar reserva (Asignar Mesas)">
-                                    ✅ Confirmar
-                                </button>
-                                <button class="btn-reject" *ngIf="canReject(r)" (click)="rechazarReserva(r)"
-                                    title="Rechazar reserva">
-                                    ✖ Rechazar
-                                </button>
                                 <button class="btn-table-cancel" *ngIf="canCancel(r)" (click)="cancelarReserva(r)"
                                     title="Cancelar reserva">
                                     ⊘ Cancelar

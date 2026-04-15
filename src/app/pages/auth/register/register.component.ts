@@ -7,7 +7,7 @@ import { AuthService } from '../../../core/services/auth.service'
 import { AlertService } from '../../../core/services/alert.service'
 import { NavbarComponent } from '../../../shared/navbar/navbar.component'
 import { FooterComponent } from '../../../shared/footer/footer.component'
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha'
+import { RecaptchaModule, RecaptchaFormsModule } from '../../../shared/recaptcha/recaptcha.module'
 
 declare var google: any;
 

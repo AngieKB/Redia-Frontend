@@ -18,7 +18,6 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
     "@types/toastify-js": "^1.12.4",
-    "ng-recaptcha": "^13.2.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.26.22",
     "toastify-js": "^1.12.0",

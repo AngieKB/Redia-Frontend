@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { RecaptchaModule, RecaptchaFormsModule } from '../../../shared/recaptcha/recaptcha.module';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../models/user.model';
 import Swal from 'sweetalert2';

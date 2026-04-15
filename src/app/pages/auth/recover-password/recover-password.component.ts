@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router'
 import { Router } from '@angular/router'
 import { AuthService } from '../../../core/services/auth.service'
 import { AlertService } from '../../../core/services/alert.service'
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha'
+import { RecaptchaModule, RecaptchaFormsModule } from '../../../shared/recaptcha/recaptcha.module'
 
 @Component({
     selector: 'app-recover-password',

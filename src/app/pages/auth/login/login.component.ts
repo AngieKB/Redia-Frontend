@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
 
         google.accounts.id.renderButton(
             buttonDiv,
-            { theme: "outline", size: "large", width: "100%", text: "continue_with" }
+            { theme: "outline", size: "large", width: 350, text: "continue_with" }
         );
     }
 

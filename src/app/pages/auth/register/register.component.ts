@@ -66,7 +66,7 @@ export class RegisterComponent implements OnInit {
 
         google.accounts.id.renderButton(
             document.getElementById("google-buttonDiv"),
-            { theme: "outline", size: "large", width: "100%", text: "continue_with" }
+            { theme: "outline", size: "large", width: 350, text: "continue_with" }
         );
     }
 

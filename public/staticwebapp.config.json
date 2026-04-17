@@ -2,7 +2,15 @@
   "routes": [
     {
       "route": "/*",
-      "rewrite": "/index.html"
+      "allowedRoles": []
     }
-  ]
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["*.{css,gif,ico,jpg,js,png,svg,webp,woff,woff2}"]
+  },
+  "mimeTypes": {
+    ".js": "application/javascript",
+    ".css": "text/css"
+  }
 }

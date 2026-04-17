@@ -31,7 +31,7 @@ jobs:
           ###### Repository/Build Configurations ######
           app_location: "/" 
           api_location: "" 
-          output_location: "dist/redia-frontend/browser"
+          output_location: "dist/redia-frontend"
           ###### End of Repository/Build Configurations ######
 
 

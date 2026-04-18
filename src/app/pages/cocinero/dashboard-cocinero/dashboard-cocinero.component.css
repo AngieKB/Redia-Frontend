@@ -1,0 +1,140 @@
+/* ═══════════════════════════════════════════
+   COCINERO DASHBOARD — Danger/Urgency Theme
+   ═══════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+:host { display: block; font-family: 'Inter', sans-serif; background: #0b0d13; min-height: 100vh; }
+
+.cocinero-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Header ── */
+.cocinero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header-left { display: flex; align-items: center; gap: 1rem; }
+
+.role-badge {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: linear-gradient(135deg, #ef444422, #ef444411);
+  border: 1px solid #ef444444;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+}
+
+.role-icon { font-size: 1.5rem; }
+.role-label { color: #ef4444; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+
+.page-title { color: #ffffff; font-size: 1.7rem; font-weight: 800; margin: 0; }
+.page-subtitle { color: #6b7280; font-size: 0.9rem; margin: 0.2rem 0 0; }
+
+.kpi-pill {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 0.7rem 1.2rem; text-align: center;
+}
+.kpi-danger { border-color: #ef444444; background: rgba(239,68,68,0.08); }
+.kpi-val { display: block; font-size: 1.6rem; font-weight: 800; color: #ef4444; line-height: 1; }
+.kpi-lbl { display: block; font-size: 0.72rem; color: #9ca3af; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Loading & Empty State ── */
+.loading-state, .empty-state {
+  display: flex; flex-direction: column; align-items: center; padding: 4rem; gap: 1rem; color: #6b7280; text-align: center;
+}
+.spinner { width: 40px; height: 40px; border: 3px solid rgba(239,68,68,0.2); border-top-color: #ef4444; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-icon { font-size: 3rem; }
+.empty-state h3 { color: #e5e7eb; font-size: 1.3rem; margin: 0; }
+
+/* ── Kitchen Grid (Comandas) ── */
+.kitchen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* Ticket Style */
+.ticket-card {
+  background: #fdfbf7; /* Papel de ticket */
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+  color: #1f2937;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Borde dentado para parecer ticket cortado */
+.ticket-card::before {
+  content: "";
+  position: absolute;
+  top: -8px; left: 0; right: 0; height: 8px;
+  background-image: radial-gradient(circle at 10px 0, transparent 10px, #fdfbf7 11px);
+  background-size: 20px 20px;
+  background-repeat: repeat-x;
+}
+
+.ticket-active { border-top: 4px solid #ef4444; }
+
+.ticket-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.25rem 0.5rem;
+  border-bottom: 2px dashed #d1d5db;
+}
+
+.ticket-meta { display: flex; flex-direction: column; }
+.ticket-id { font-family: 'Space Mono', monospace; font-size: 1.2rem; font-weight: 700; color: #111827; }
+.ticket-time { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #6b7280; }
+
+.ticket-status {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 4px;
+}
+.status-progress { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; animation: pulse 2s infinite; }
+.status-waiting { background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; }
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.ticket-waiter { padding: 0.75rem 1.25rem; font-size: 0.85rem; color: #4b5563; font-weight: 600; border-bottom: 1px dashed #e5e7eb; }
+
+.ticket-general-notes {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  margin: 0.75rem 1.25rem 0; padding: 0.5rem 0.75rem;
+  font-size: 0.85rem; color: #991b1b;
+}
+
+.ticket-items { padding: 1rem 1.25rem; flex: 1; }
+
+.ticket-item { margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px solid #f3f4f6; }
+.ticket-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.item-main { display: flex; align-items: flex-start; gap: 0.5rem; }
+.item-qty { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 1.1rem; color: #111827; min-width: 30px; }
+.item-name { font-weight: 600; font-size: 1rem; color: #1f2937; line-height: 1.2; }
+
+.item-notes { margin-top: 0.3rem; margin-left: 38px; font-size: 0.8rem; color: #b91c1c; font-style: italic; }
+.note-icon { color: #f87171; }
+
+.ticket-footer { background: #f9fafb; padding: 1rem 1.25rem; border-top: 1px dashed #d1d5db; text-align: center; }
+
+.btn-ready {
+  width: 100%; padding: 0.8rem; border-radius: 6px; border: none;
+  background: #ef4444; color: #fff; font-weight: 700; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer; transition: background 0.2s;
+}
+.btn-ready:hover { background: #dc2626; }
+
+.waiting-notice { color: #9ca3af; font-size: 0.8rem; font-style: italic; }

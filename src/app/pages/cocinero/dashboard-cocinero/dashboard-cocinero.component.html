@@ -1,0 +1,99 @@
+<app-navbar></app-navbar>
+
+<div class="cocinero-shell">
+
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <header class="cocinero-header">
+    <div class="header-left">
+      <div class="role-badge">
+        <span class="role-icon">🧑‍🍳</span>
+        <span class="role-label">Cocinero</span>
+      </div>
+      <div>
+        <h1 class="page-title">Monitor de Cocina</h1>
+        <p class="page-subtitle">Pedidos en preparación y en cola</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="kpi-pill kpi-danger">
+        <span class="kpi-val">{{ orders.length }}</span>
+        <span class="kpi-lbl">En Cola</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando comandas…</p>
+  </div>
+
+  <!-- ══════════════════ COMANDAS GRID ══════════════════ -->
+  <section *ngIf="!isLoading">
+
+    <div *ngIf="orders.length === 0" class="empty-state">
+      <div class="empty-icon">🍳</div>
+      <h3>La cocina está al día</h3>
+      <p>No hay pedidos pendientes en este momento.</p>
+    </div>
+
+    <!-- Layout estilo Kanban o masonry para los tickets -->
+    <div class="kitchen-grid" *ngIf="orders.length > 0">
+
+      <div class="ticket-card" *ngFor="let order of orders; trackBy: trackById" [class.ticket-active]="order.status === 'IN_PROGRESS'">
+        
+        <!-- Header del ticket -->
+        <div class="ticket-header">
+          <div class="ticket-meta">
+            <span class="ticket-id">#{{ order.id }}</span>
+            <span class="ticket-time">{{ order.fechaCreacion | date:'HH:mm' }}</span>
+          </div>
+          <div class="ticket-status" [class]="order.status === 'IN_PROGRESS' ? 'status-progress' : 'status-waiting'">
+            {{ order.status === 'IN_PROGRESS' ? 'En Preparación' : 'En Espera' }}
+          </div>
+        </div>
+
+        <!-- Info Mesero -->
+        <div class="ticket-waiter">
+          <span>🛎️ Mesero: {{ order.meseroNombre }}</span>
+        </div>
+
+        <!-- Notas generales -->
+        <div class="ticket-general-notes" *ngIf="order.notas">
+          <strong>⚠️ NOTA GENERAL:</strong> {{ order.notas }}
+        </div>
+
+        <!-- Platos -->
+        <div class="ticket-items">
+          <div class="ticket-item" *ngFor="let item of order.dishes">
+            <div class="item-main">
+              <span class="item-qty">{{ item.cantidad }}x</span>
+              <span class="item-name">{{ item.dishNombre }}</span>
+            </div>
+            <div class="item-notes" *ngIf="item.notas">
+              <span class="note-icon">↪</span> {{ item.notas }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="ticket-footer">
+          <button 
+            *ngIf="order.status === 'IN_PROGRESS'" 
+            class="btn-ready" 
+            (click)="markReady(order.id)">
+            ✅ Marcar como Listo
+          </button>
+          <div class="waiting-notice" *ngIf="order.status !== 'IN_PROGRESS'">
+            El mesero debe enviarlo a cocina.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<app-footer></app-footer>

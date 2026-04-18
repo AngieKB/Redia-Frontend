@@ -1,0 +1,182 @@
+/* ═══════════════════════════════════════════
+   CAJERO DASHBOARD — Trust / Emerald Theme
+   ═══════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:host { display: block; font-family: 'Inter', sans-serif; background: #0c1512; min-height: 100vh; }
+
+.cajero-shell {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Header ── */
+.cajero-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;
+}
+
+.header-left { display: flex; align-items: center; gap: 1rem; }
+
+.role-badge {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: linear-gradient(135deg, #10b98122, #10b98111);
+  border: 1px solid #10b98144;
+  border-radius: 12px; padding: 0.6rem 1rem;
+}
+
+.role-label { color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+.role-icon { font-size: 1.5rem; }
+
+.page-title { color: #ffffff; font-size: 1.7rem; font-weight: 800; margin: 0; }
+.page-subtitle { color: #6b7280; font-size: 0.9rem; margin: 0.2rem 0 0; }
+
+.kpi-pill {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 0.7rem 1.2rem; text-align: center;
+}
+.kpi-success { border-color: #10b98144; background: rgba(16,185,129,0.08); }
+.kpi-val { display: block; font-size: 1.6rem; font-weight: 800; color: #10b981; line-height: 1; }
+.kpi-lbl { display: block; font-size: 0.72rem; color: #9ca3af; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── System States ── */
+.loading-state, .empty-state {
+  display: flex; flex-direction: column; align-items: center; padding: 4rem; gap: 1rem; color: #6b7280; text-align: center;
+}
+.spinner { width: 40px; height: 40px; border: 3px solid rgba(16,185,129,0.2); border-top-color: #10b981; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-icon { font-size: 3rem; }
+.empty-state h3 { color: #e5e7eb; font-size: 1.3rem; margin: 0; }
+
+/* ── Layout ── */
+.cajero-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .cajero-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Orders List (Left) ── */
+.orders-list-panel {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.panel-title { color: #10b981; font-size: 1rem; font-weight: 700; margin: 0 0 1rem; }
+
+.orders-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 600px; overflow-y: auto; padding-right: 0.25rem; }
+
+.order-list-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.order-list-item:hover { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05); transform: translateX(2px); }
+.order-list-item.selected { border-color: #10b981; background: rgba(16,185,129,0.12); border-left: 4px solid #10b981; }
+
+.order-list-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+.order-id { font-family: 'Space Mono', monospace; color: #10b981; font-weight: 700; }
+.order-time { color: #6b7280; font-size: 0.8rem; }
+
+.order-list-client { display: flex; flex-direction: column; gap: 0.2rem; }
+.client-name { color: #e5e7eb; font-weight: 600; font-size: 0.95rem; }
+.waiter-name { color: #9ca3af; font-size: 0.8rem; }
+
+.order-list-total { margin-top: 0.75rem; text-align: right; color: #f3f4f6; font-weight: 700; font-size: 1.1rem; }
+
+/* ── Payment Details (Right, Receipt Style) ── */
+.payment-panel {
+  position: sticky; top: 1.5rem;
+}
+
+.no-selection {
+  background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #6b7280; height: 100%; min-height: 400px;
+}
+.no-sel-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;}
+
+.payment-details {
+  background: #fdfbf7; /* Papel recibo */
+  border-radius: 8px;
+  padding: 2rem 2.5rem;
+  color: #1f2937;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.6);
+  position: relative;
+}
+
+/* Efecto ticket aserrado superior/inferior */
+.payment-details::before, .payment-details::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 10px;
+  background-image: radial-gradient(circle at 10px 0, transparent 10px, #fdfbf7 11px);
+  background-size: 20px 20px; background-repeat: repeat-x;
+}
+.payment-details::before { top: -10px; }
+.payment-details::after { bottom: -10px; transform: rotate(180deg); }
+
+.receipt-header { text-align: center; border-bottom: 2px dashed #9ca3af; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+.receipt-header h2 { margin: 0; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+.receipt-meta { display: flex; justify-content: space-between; margin-top: 0.8rem; font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #4b5563; }
+
+.receipt-client { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #d1d5db; }
+.info-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
+.info-lbl { color: #6b7280; }
+.info-val { font-weight: 600; color: #111827; }
+
+.receipt-items { margin-bottom: 1.5rem; }
+.r-item { display: flex; align-items: baseline; margin-bottom: 0.6rem; font-family: 'Space Mono', monospace; font-size: 0.9rem; }
+.r-qty { width: 30px; font-weight: 700; }
+.r-name { flex: 1; border-bottom: 1px dotted #d1d5db; margin: 0 10px; padding-bottom: 2px; }
+.r-price { font-weight: 700; }
+
+.receipt-total { 
+  display: flex; justify-content: space-between; align-items: flex-end; 
+  padding-top: 1rem; border-top: 2px dashed #111827; margin-bottom: 2.5rem; 
+}
+.receipt-total span:first-child { font-weight: 700; font-size: 1.2rem; }
+.huge-total { font-family: 'Space Mono', monospace; font-size: 1.8rem; font-weight: 800; color: #111827; }
+
+/* Action Box */
+.payment-action-box {
+  background: #f3f4f6; border-radius: 12px; padding: 1.5rem; border: 1px solid #e5e7eb;
+}
+
+.pay-title { margin: 0 0 1rem; font-size: 0.95rem; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+
+.payment-methods { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+
+.pm-option {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.8rem 0; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 8px;
+  cursor: pointer; transition: all 0.2s;
+}
+.pm-option input[type="radio"] { display: none; }
+.pm-icon { font-size: 1.5rem; }
+.pm-lbl { font-size: 0.8rem; font-weight: 600; color: #4b5563; }
+
+.pm-option:hover { border-color: #10b98188; background: #f0fdf4; }
+.pm-option.active { border-color: #10b981; background: #ecfdf5; box-shadow: 0 4px 10px rgba(16,185,129,0.15); }
+.pm-option.active .pm-lbl { color: #047857; }
+
+.btn-process-payment {
+  width: 100%; padding: 1rem; border-radius: 8px; border: none;
+  background: #10b981; color: #fff; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+}
+
+.btn-process-payment:hover:not(:disabled) { background: #059669; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+.btn-process-payment:disabled { background: #9ca3af; cursor: not-allowed; box-shadow: none; transform: none; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }

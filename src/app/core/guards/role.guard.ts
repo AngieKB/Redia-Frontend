@@ -24,6 +24,12 @@ export const RoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
         router.navigate(['/admin/dashboard'])
     } else if (role === 'RECEPCIONISTA') {
         router.navigate(['/recepcionista/dashboard'])
+    } else if (role === 'MESERO') {
+        router.navigate(['/mesero/dashboard'])
+    } else if (role === 'COCINERO') {
+        router.navigate(['/cocinero/dashboard'])
+    } else if (role === 'CAJERO') {
+        router.navigate(['/cajero/dashboard'])
     } else {
         router.navigate(['/cliente/my-reservations'])
     }

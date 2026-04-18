@@ -22,6 +22,7 @@ import { MyReservations } from './pages/cliente/my-reservations/my-reservations.
 import { SupportClientComponent } from './pages/cliente/support-client/support-client.component'
 
 import { ProfilePage } from './pages/profile/profile-page.component'
+import { PrivacyPolicyComponent } from './pages/legal/privacy-policy/privacy-policy.component'
 
 export const routes: Routes = [
 
@@ -33,6 +34,7 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'recover-password', component: RecoverPasswordComponent },
     { path: 'reset-password', component: ResetPassword },
+    { path: 'politica-de-datos', component: PrivacyPolicyComponent },
 
     // Completa el perfil de Google (requiere token del login de Google)
     {
@@ -105,6 +107,28 @@ export const routes: Routes = [
         component: SupportClientComponent,
         canActivate: [RoleGuard],
         data: { roles: ['CLIENTE'] }
+    },
+
+    // ──────────────────────────────────────────
+    // Rutas de PERSONAL (Mesero, Cocinero, Cajero)
+    // ──────────────────────────────────────────
+    {
+        path: 'mesero/dashboard',
+        loadComponent: () => import('./pages/mesero/dashboard-mesero/dashboard-mesero.component').then(m => m.DashboardMeseroComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ['MESERO'] }
+    },
+    {
+        path: 'cocinero/dashboard',
+        loadComponent: () => import('./pages/cocinero/dashboard-cocinero/dashboard-cocinero.component').then(m => m.DashboardCocineroComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ['COCINERO'] }
+    },
+    {
+        path: 'cajero/dashboard',
+        loadComponent: () => import('./pages/cajero/dashboard-cajero/dashboard-cajero.component').then(m => m.DashboardCajeroComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ['CAJERO'] }
     },
 
 

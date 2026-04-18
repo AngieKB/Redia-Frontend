@@ -1,0 +1,153 @@
+<app-navbar></app-navbar>
+
+<div class="cajero-shell">
+
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <header class="cajero-header">
+    <div class="header-left">
+      <div class="role-badge">
+        <span class="role-icon">💰</span>
+        <span class="role-label">Cajero</span>
+      </div>
+      <div>
+        <h1 class="page-title">Punto de Cobro</h1>
+        <p class="page-subtitle">Pedidos listos pendientes de pago</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="kpi-pill kpi-success">
+        <span class="kpi-val">{{ orders.length }}</span>
+        <span class="kpi-lbl">Por Cobrar</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando caja…</p>
+  </div>
+
+  <div *ngIf="!isLoading && orders.length === 0" class="empty-state">
+    <div class="empty-icon">💸</div>
+    <h3>Sin pedidos para cobrar</h3>
+    <p>Todos los pedidos listos han sido pagados.</p>
+  </div>
+
+  <!-- ═══════════════════════════ MAIN LAYOUT ═══════════════════════════ -->
+  <div class="cajero-layout" *ngIf="!isLoading && orders.length > 0">
+    
+    <!-- Lista de Pedidos (Izquierda) -->
+    <div class="orders-list-panel">
+      <h3 class="panel-title">Seleccionar Pedido</h3>
+      
+      <div class="orders-list">
+        <div 
+          class="order-list-item" 
+          *ngFor="let order of orders; trackBy: trackById"
+          [class.selected]="selectedOrder?.id === order.id"
+          (click)="selectOrder(order)">
+          
+          <div class="order-list-header">
+            <span class="order-id">#{{ order.id }}</span>
+            <span class="order-time">{{ order.fechaCreacion | date:'HH:mm' }}</span>
+          </div>
+          
+          <div class="order-list-client">
+            <span class="client-name">{{ order.clienteNombre }}</span>
+            <span class="waiter-name">Mesero: {{ order.meseroNombre }}</span>
+          </div>
+
+          <div class="order-list-total">
+            {{ order.total | currency:'COP':'symbol-narrow':'1.0-0' }}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle de Cobro (Derecha) -->
+    <div class="payment-panel">
+      
+      <div *ngIf="!selectedOrder" class="no-selection">
+        <span class="no-sel-icon">👈</span>
+        <p>Selecciona un pedido de la lista para procesar su pago</p>
+      </div>
+
+      <div *ngIf="selectedOrder" class="payment-details">
+        
+        <div class="receipt-header">
+          <h2>Recibo de Cobro</h2>
+          <div class="receipt-meta">
+            <span>Pedido #{{ selectedOrder.id }}</span>
+            <span>{{ today | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+
+        <div class="receipt-client">
+          <div class="info-row">
+            <span class="info-lbl">Cliente:</span>
+            <span class="info-val">{{ selectedOrder.clienteNombre }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Email:</span>
+            <span class="info-val">{{ selectedOrder.clienteEmail }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Atendido por:</span>
+            <span class="info-val">{{ selectedOrder.meseroNombre }}</span>
+          </div>
+        </div>
+
+        <div class="receipt-items">
+          <div class="r-item" *ngFor="let item of selectedOrder.dishes">
+            <span class="r-qty">{{ item.cantidad }}</span>
+            <span class="r-name">{{ item.dishNombre }}</span>
+            <span class="r-price">{{ item.subtotal | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="receipt-total">
+          <span>TOTAL A PAGAR</span>
+          <span class="huge-total">{{ selectedOrder.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+
+        <div class="payment-action-box">
+          <h4 class="pay-title">Método de Pago</h4>
+          
+          <div class="payment-methods">
+            <label class="pm-option" [class.active]="metodoPago === 'EFECTIVO'">
+              <input type="radio" name="metodoPago" value="EFECTIVO" [(ngModel)]="metodoPago">
+              <span class="pm-icon">💵</span>
+              <span class="pm-lbl">Efectivo</span>
+            </label>
+            <label class="pm-option" [class.active]="metodoPago === 'TARJETA'">
+              <input type="radio" name="metodoPago" value="TARJETA" [(ngModel)]="metodoPago">
+              <span class="pm-icon">💳</span>
+              <span class="pm-lbl">Tarjeta</span>
+            </label>
+            <label class="pm-option" [class.active]="metodoPago === 'TRANSFERENCIA'">
+              <input type="radio" name="metodoPago" value="TRANSFERENCIA" [(ngModel)]="metodoPago">
+              <span class="pm-icon">📱</span>
+              <span class="pm-lbl">Transferencia</span>
+            </label>
+          </div>
+
+          <button 
+            class="btn-process-payment" 
+            [disabled]="isPaying"
+            (click)="processPayment()">
+            <span *ngIf="!isPaying">💰 Registrar Pago</span>
+            <span *ngIf="isPaying">Procesando…</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<app-footer></app-footer>

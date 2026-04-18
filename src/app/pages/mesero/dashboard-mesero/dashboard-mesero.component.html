@@ -1,0 +1,233 @@
+<app-navbar></app-navbar>
+
+<div class="mesero-shell">
+
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <header class="mesero-header">
+    <div class="header-left">
+      <div class="role-badge">
+        <span class="role-icon">🍽️</span>
+        <span class="role-label">Mesero</span>
+      </div>
+      <div>
+        <h1 class="page-title">Panel del Mesero</h1>
+        <p class="page-subtitle">Gestiona y registra los pedidos de tus mesas</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="kpi-pill">
+        <span class="kpi-val">{{ orders.length }}</span>
+        <span class="kpi-lbl">Pedidos activos</span>
+      </div>
+      <div class="kpi-pill kpi-highlight">
+        <span class="kpi-val">{{ orders.length > 0 ? orders.filter(o => o.status === 'READY').length : 0 }}</span>
+        <span class="kpi-lbl">Listos</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════ TABS ═══════════════════════════ -->
+  <nav class="tab-nav">
+    <button class="tab-btn" [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'; loadOrders()">
+      <span>📋</span> Mis Pedidos
+    </button>
+    <button class="tab-btn tab-btn-accent" [class.active]="activeTab === 'new-order'" (click)="openNewOrder()">
+      <span>➕</span> Nuevo Pedido
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando…</p>
+  </div>
+
+  <!-- ══════════════════ TAB: MIS PEDIDOS ══════════════════ -->
+  <section *ngIf="!isLoading && activeTab === 'orders'" class="orders-section">
+
+    <div *ngIf="orders.length === 0" class="empty-state">
+      <div class="empty-icon">🍴</div>
+      <h3>Sin pedidos activos</h3>
+      <p>Crea un nuevo pedido para empezar.</p>
+      <button class="btn-primary" (click)="openNewOrder()">Registrar pedido</button>
+    </div>
+
+    <div class="orders-grid" *ngIf="orders.length > 0">
+      <div class="order-card" *ngFor="let order of orders; trackBy: trackById" [class]="'order-card--' + order.status.toLowerCase()">
+
+        <div class="order-card-header">
+          <div class="order-id">#{{ order.id }}</div>
+          <span class="status-badge" [class]="getStatusClass(order.status)">{{ getStatusLabel(order.status) }}</span>
+        </div>
+
+        <div class="order-client">
+          <span class="client-icon">👤</span>
+          <div>
+            <div class="client-name">{{ order.clienteNombre }}</div>
+            <div class="client-email">{{ order.clienteEmail }}</div>
+          </div>
+        </div>
+
+        <div class="order-dishes">
+          <div class="dish-row" *ngFor="let d of order.dishes">
+            <span class="dish-qty">×{{ d.cantidad }}</span>
+            <span class="dish-name">{{ d.dishNombre }}</span>
+            <span class="dish-price">{{ d.subtotal | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+          </div>
+          <div class="dish-notes" *ngIf="order.notas">
+            <span class="notes-label">📝 Nota:</span> {{ order.notas }}
+          </div>
+        </div>
+
+        <div class="order-footer">
+          <div class="order-time">{{ order.fechaCreacion | date:'HH:mm' }}</div>
+          <div class="order-total">Total: <strong>{{ order.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ TAB: NUEVO PEDIDO ══════════════════ -->
+  <section *ngIf="!isLoading && activeTab === 'new-order'" class="new-order-section">
+
+    <!-- Éxito -->
+    <div *ngIf="createSuccess" class="success-banner">
+      ✅ ¡Pedido enviado a cocina correctamente!
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="createError" class="error-banner">
+      ⚠️ {{ createError }}
+    </div>
+
+    <div class="new-order-layout">
+
+      <!-- ─── Panel de selección ─── -->
+      <div class="selection-panel">
+
+        <!-- Reserva -->
+        <div class="form-section">
+          <h3 class="section-title">1. Selecciona la Reserva</h3>
+          <div *ngIf="reservations.length === 0" class="no-reservations">
+            No hay reservas confirmadas activas en este momento.
+          </div>
+          <div class="reservations-list">
+            <button
+              *ngFor="let r of reservations"
+              class="reservation-card"
+              [class.selected]="selectedReservationId === r.id"
+              (click)="selectedReservationId = r.id">
+              <div class="res-client">
+                <span class="res-avatar">{{ r.clienteNombre.charAt(0) }}</span>
+                <div>
+                  <div class="res-name">{{ r.clienteNombre }}</div>
+                  <div class="res-email">{{ r.clienteEmail }}</div>
+                </div>
+              </div>
+              <div class="res-meta">
+                <span class="res-persons">👥 {{ r.numeroPersonas }} personas</span>
+                <span class="res-time">🕐 {{ r.fechaReserva | date:'HH:mm' }}</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros del menú -->
+        <div class="form-section">
+          <h3 class="section-title">2. Selecciona los Platos</h3>
+          <div class="menu-filters">
+            <input
+              class="search-input"
+              type="text"
+              placeholder="Buscar plato..."
+              [(ngModel)]="dishFilter" />
+            <div class="cat-chips">
+              <button
+                *ngFor="let cat of categories"
+                class="cat-chip"
+                [class.active]="categoryFilter === cat"
+                (click)="categoryFilter = cat">
+                {{ cat }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Grid del menú -->
+          <div class="menu-grid">
+            <div
+              class="menu-item"
+              *ngFor="let dish of filteredDishes"
+              (click)="addToCart(dish)">
+              <div class="menu-item-img" [style.backgroundImage]="'url(' + (dish.imageUrl || '') + ')'">
+                <div class="menu-item-overlay">
+                  <span class="add-icon">+</span>
+                </div>
+              </div>
+              <div class="menu-item-info">
+                <div class="menu-item-name">{{ dish.nombre }}</div>
+                <div class="menu-item-cat">{{ dish.categoria }}</div>
+                <div class="menu-item-price">{{ dish.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ─── Carrito ─── -->
+      <aside class="cart-panel">
+        <h3 class="cart-title">🛒 Resumen del Pedido</h3>
+
+        <div *ngIf="cart.length === 0" class="empty-cart">
+          <span>🍽️</span>
+          <p>Agrega platos desde el menú</p>
+        </div>
+
+        <div class="cart-items" *ngIf="cart.length > 0">
+          <div class="cart-item" *ngFor="let item of cart; let i = index">
+            <div class="cart-item-info">
+              <span class="cart-item-name">{{ item.dish.nombre }}</span>
+              <span class="cart-item-price">{{ item.dish.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            </div>
+            <div class="cart-item-controls">
+              <button class="qty-btn" (click)="item.cantidad > 1 ? item.cantidad = item.cantidad - 1 : removeFromCart(i)">−</button>
+              <span class="qty-display">{{ item.cantidad }}</span>
+              <button class="qty-btn" (click)="item.cantidad = item.cantidad + 1">+</button>
+              <button class="remove-btn" (click)="removeFromCart(i)">🗑️</button>
+            </div>
+            <input
+              class="notes-input"
+              type="text"
+              placeholder="Notas (sin cebolla, extra salsa...)"
+              [(ngModel)]="item.notas" />
+          </div>
+        </div>
+
+        <div class="cart-notes" *ngIf="cart.length > 0">
+          <label>Nota general del pedido:</label>
+          <textarea class="textarea-notes" rows="2" [(ngModel)]="orderNotas" placeholder="Comentarios especiales..."></textarea>
+        </div>
+
+        <div class="cart-total" *ngIf="cart.length > 0">
+          <span>Total estimado:</span>
+          <strong>{{ cartTotal | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+        </div>
+
+        <button
+          class="btn-submit"
+          [disabled]="!selectedReservationId || cart.length === 0 || creatingOrder"
+          (click)="submitOrder()">
+          <span *ngIf="!creatingOrder">📤 Enviar a Cocina</span>
+          <span *ngIf="creatingOrder">Enviando…</span>
+        </button>
+
+        <button class="btn-cancel" (click)="activeTab = 'orders'">Cancelar</button>
+      </aside>
+
+    </div>
+  </section>
+
+</div>
+
+<app-footer></app-footer>

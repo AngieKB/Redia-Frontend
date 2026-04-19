@@ -33,10 +33,10 @@ export class DashboardCocineroComponent implements OnInit, OnDestroy {
   loadOrders() {
     this.orderService.getKitchenOrders().subscribe({
       next: (orders) => {
-        // Ordenar: IN_PROGRESS primero (ya trabajando), luego CREATED
+        // Ordenar: EN_PREPARACION primero (ya trabajando), luego PENDIENTE
         this.orders = orders.sort((a, b) => {
-          if (a.status === 'IN_PROGRESS' && b.status !== 'IN_PROGRESS') return -1;
-          if (a.status !== 'IN_PROGRESS' && b.status === 'IN_PROGRESS') return 1;
+          if (a.status === 'EN_PREPARACION' && b.status !== 'EN_PREPARACION') return -1;
+          if (a.status !== 'EN_PREPARACION' && b.status === 'EN_PREPARACION') return 1;
           // Si tienen el mismo estado, ordenar por fecha (más antiguo primero)
           return new Date(a.fechaCreacion).getTime() - new Date(b.fechaCreacion).getTime();
         });

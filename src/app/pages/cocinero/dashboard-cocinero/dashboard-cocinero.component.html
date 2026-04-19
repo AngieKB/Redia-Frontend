@@ -40,7 +40,7 @@
     <!-- Layout estilo Kanban o masonry para los tickets -->
     <div class="kitchen-grid" *ngIf="orders.length > 0">
 
-      <div class="ticket-card" *ngFor="let order of orders; trackBy: trackById" [class.ticket-active]="order.status === 'IN_PROGRESS'">
+      <div class="ticket-card" *ngFor="let order of orders; trackBy: trackById" [class.ticket-active]="order.status === 'EN_PREPARACION'">
         
         <!-- Header del ticket -->
         <div class="ticket-header">
@@ -48,8 +48,8 @@
             <span class="ticket-id">#{{ order.id }}</span>
             <span class="ticket-time">{{ order.fechaCreacion | date:'HH:mm' }}</span>
           </div>
-          <div class="ticket-status" [class]="order.status === 'IN_PROGRESS' ? 'status-progress' : 'status-waiting'">
-            {{ order.status === 'IN_PROGRESS' ? 'En Preparación' : 'En Espera' }}
+          <div class="ticket-status" [class]="order.status === 'EN_PREPARACION' ? 'status-progress' : 'status-waiting'">
+            {{ order.status === 'EN_PREPARACION' ? 'En Preparación' : 'En Espera' }}
           </div>
         </div>
 
@@ -79,12 +79,12 @@
         <!-- Acciones -->
         <div class="ticket-footer">
           <button 
-            *ngIf="order.status === 'IN_PROGRESS'" 
+            *ngIf="order.status === 'EN_PREPARACION'" 
             class="btn-ready" 
             (click)="markReady(order.id)">
             ✅ Marcar como Listo
           </button>
-          <div class="waiting-notice" *ngIf="order.status !== 'IN_PROGRESS'">
+          <div class="waiting-notice" *ngIf="order.status !== 'EN_PREPARACION'">
             El mesero debe enviarlo a cocina.
           </div>
         </div>

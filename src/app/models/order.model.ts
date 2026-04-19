@@ -9,7 +9,7 @@ export interface OrderDish {
 
 export interface Order {
   id: number;
-  status: 'CREATED' | 'IN_PROGRESS' | 'READY' | 'PAID' | 'CANCELLED';
+  status: 'PENDIENTE' | 'EN_PREPARACION' | 'LISTO' | 'PAGADO' | 'CANCELADO';
   reservationId: string;
   clienteNombre: string;
   clienteEmail: string;

@@ -162,22 +162,22 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
   // ── Helpers
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
-      CREATED: 'Registrado',
-      IN_PROGRESS: 'En Cocina',
-      READY: 'Listo',
-      PAID: 'Pagado',
-      CANCELLED: 'Cancelado'
+      PENDIENTE: 'Registrado',
+      EN_PREPARACION: 'En Cocina',
+      LISTO: 'Listo',
+      PAGADO: 'Pagado',
+      CANCELADO: 'Cancelado'
     };
     return labels[status] ?? status;
   }
 
   getStatusClass(status: string): string {
     const classes: Record<string, string> = {
-      CREATED: 'status-created',
-      IN_PROGRESS: 'status-kitchen',
-      READY: 'status-ready',
-      PAID: 'status-paid',
-      CANCELLED: 'status-cancelled'
+      PENDIENTE: 'status-created',
+      EN_PREPARACION: 'status-kitchen',
+      LISTO: 'status-ready',
+      PAGADO: 'status-paid',
+      CANCELADO: 'status-cancelled'
     };
     return classes[status] ?? '';
   }

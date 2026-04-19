@@ -32,6 +32,9 @@ export class Users implements OnInit {
   errorMessage = '';
   errors: { [key: string]: string } = {};
   isSaving = false;
+  
+  // Tabs "normal" | "bajas"
+  activeTab: 'normal' | 'bajas' = 'normal';
 
   constructor(
     private userService: UserService,
@@ -59,12 +62,21 @@ export class Users implements OnInit {
     });
   }
 
-  get filteredUsers(): User[] {
+  get filteredNormalUsers(): User[] {
     return this.users.filter(u => {
       const matchSearch = u.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         u.email.toLowerCase().includes(this.searchTerm.toLowerCase());
       const matchRole = this.selectedRole ? u.role === this.selectedRole : true;
-      return matchSearch && matchRole;
+      return matchSearch && matchRole && !u.bajaSolicitada;
+    });
+  }
+
+  get filteredUnsubscribingUsers(): User[] {
+    return this.users.filter(u => {
+      const matchSearch = u.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        u.email.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchRole = this.selectedRole ? u.role === this.selectedRole : true;
+      return matchSearch && matchRole && u.bajaSolicitada;
     });
   }
 

@@ -156,4 +156,13 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${this.apiUrl}/2fa/verify`, { email, code })
     }
 
+    // Solicitar Baja de Cuenta
+    requestDeletion(): Observable<any> {
+        const token = this.getToken()
+        return this.http.post(`${this.apiUrl}/request-deletion`, {}, {
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: 'text' as 'json'
+        })
+    }
+
 }

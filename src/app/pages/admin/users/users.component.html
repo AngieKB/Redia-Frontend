@@ -41,10 +41,21 @@
             </select>
         </div>
 
-        <!-- Table -->
-        <div class="table-wrapper">
-            <div *ngIf="isLoading" class="loading-text" style="padding: 20px; text-align: center;">Cargando usuarios...
-            </div>
+        <!-- Sub-Tabs for Tables -->
+        <div class="user-tabs" style="margin-bottom: 20px; display: flex; gap: 15px;">
+            <button (click)="activeTab = 'normal'" 
+                    [ngStyle]="{'background': activeTab === 'normal' ? 'var(--ion-color-primary)' : 'transparent', 'color': activeTab === 'normal' ? 'white' : 'var(--ion-color-primary)', 'border': '1px solid var(--ion-color-primary)', 'padding': '8px 16px', 'border-radius': '8px', 'cursor': 'pointer', 'font-weight': '600'}">
+                Todos los Usuarios
+            </button>
+            <button (click)="activeTab = 'bajas'" 
+                    [ngStyle]="{'background': activeTab === 'bajas' ? '#e53935' : 'transparent', 'color': activeTab === 'bajas' ? 'white' : '#e53935', 'border': '1px solid #e53935', 'padding': '8px 16px', 'border-radius': '8px', 'cursor': 'pointer', 'font-weight': '600'}">
+                Solicitudes de Baja
+            </button>
+        </div>
+
+        <!-- Table para Normales -->
+        <div class="table-wrapper" *ngIf="activeTab === 'normal'">
+            <div *ngIf="isLoading" class="loading-text" style="padding: 20px; text-align: center;">Cargando usuarios...</div>
             <table class="data-table" *ngIf="!isLoading">
                 <thead>
                     <tr>
@@ -56,7 +67,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let user of filteredUsers">
+                    <tr *ngFor="let user of filteredNormalUsers">
                         <td>
                             <div class="user-name-cell">
                                 <div class="user-avatar">{{ user.nombre.charAt(0) | uppercase }}</div>
@@ -66,8 +77,7 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.telefono }}</td>
                         <td>
-                            <span class="role-badge" [ngClass]="'role-' + (user.role | lowercase)">{{ user.role
-                                }}</span>
+                            <span class="role-badge" [ngClass]="'role-' + (user.role | lowercase)">{{ user.role }}</span>
                         </td>
                         <td>
                             <div class="table-actions">
@@ -78,8 +88,47 @@
                     <tr *ngIf="users.length === 0 && !isLoading">
                         <td colspan="5" class="empty-row">No hay usuarios registrados</td>
                     </tr>
-                    <tr *ngIf="filteredUsers.length === 0 && users.length > 0 && !isLoading">
+                    <tr *ngIf="filteredNormalUsers.length === 0 && users.length > 0 && !isLoading">
                         <td colspan="5" class="empty-row">No se encontraron usuarios para este filtro</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table para Bajas -->
+        <div class="table-wrapper" *ngIf="activeTab === 'bajas'">
+            <div *ngIf="isLoading" class="loading-text" style="padding: 20px; text-align: center;">Cargando usuarios...</div>
+            <table class="data-table" *ngIf="!isLoading">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Estado de Baja</th>
+                        <th>Acciones DB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of filteredUnsubscribingUsers">
+                        <td>
+                            <div class="user-name-cell" style="color: #e53935;">
+                                <div class="user-avatar" style="background: #ffebee; color: #e53935;">⚠️</div>
+                                {{ user.nombre }}
+                            </div>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.telefono }}</td>
+                        <td>
+                            <span class="role-badge" style="background: #ffebee; color: #c62828;">Eliminación Pendiente</span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-table-delete" style="background: #e53935; color: white;" (click)="eliminarUsuario(user)">Borrar Definitivamente</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="filteredUnsubscribingUsers.length === 0 && !isLoading">
+                        <td colspan="5" class="empty-row">No hay solicitudes de baja pendientes</td>
                     </tr>
                 </tbody>
             </table>

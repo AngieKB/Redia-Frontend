@@ -5,4 +5,5 @@ export interface User {
     telefono: string;
     role: string;
     fotoUrl?: string;
+    bajaSolicitada?: boolean;
 }

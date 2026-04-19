@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -42,7 +42,8 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
   constructor(
     private orderService: OrderService,
     private menuService: MenuService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -56,8 +57,15 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
 
   loadOrders() {
     this.orderService.getMyOrders().subscribe({
-      next: (orders) => { this.orders = orders; this.isLoading = false; },
-      error: () => { this.isLoading = false; }
+      next: (orders) => { 
+        this.orders = orders; 
+        this.isLoading = false; 
+        this.cdr.detectChanges();
+      },
+      error: () => { 
+        this.isLoading = false; 
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -79,10 +87,12 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
         this.reservations = result.reservations;
         this.dishes = result.dishes;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
         this.createError = 'Error de conexión. No se pudieron cargar los datos para el pedido.';
+        this.cdr.detectChanges();
         console.error('Error cargando nuevo pedido:', err);
       }
     });
@@ -139,6 +149,7 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
       next: (order) => {
         this.creatingOrder = false;
         this.createSuccess = true;
+        this.cdr.detectChanges();
         // Enviar automáticamente a cocina
         this.orderService.sendToKitchen(order.id).subscribe({
           next: () => {
@@ -155,6 +166,7 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.creatingOrder = false;
         this.createError = err?.error?.message || 'Error al crear el pedido.';
+        this.cdr.detectChanges();
       }
     });
   }

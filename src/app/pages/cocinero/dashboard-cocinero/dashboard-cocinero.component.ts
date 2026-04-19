@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
@@ -18,7 +18,7 @@ export class DashboardCocineroComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   private pollInterval: any;
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadOrders();
@@ -41,9 +41,11 @@ export class DashboardCocineroComponent implements OnInit, OnDestroy {
           return new Date(a.fechaCreacion).getTime() - new Date(b.fechaCreacion).getTime();
         });
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -56,6 +58,7 @@ export class DashboardCocineroComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error al marcar como listo', err);
         alert('Error: ' + (err?.error?.message || 'No se pudo actualizar el pedido'));
+        this.cdr.detectChanges();
       }
     });
   }

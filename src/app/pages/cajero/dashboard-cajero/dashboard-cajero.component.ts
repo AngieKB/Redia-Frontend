@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -24,7 +24,7 @@ export class DashboardCajeroComponent implements OnInit, OnDestroy {
   
   private pollInterval: any;
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadOrders();
@@ -50,9 +50,11 @@ export class DashboardCajeroComponent implements OnInit, OnDestroy {
             this.selectedOrder = null;
           }
         }
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -75,6 +77,7 @@ export class DashboardCajeroComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.isPaying = false;
         alert('Error al registrar pago: ' + (err?.error?.message || 'Error desconocido'));
+        this.cdr.detectChanges();
       }
     });
   }

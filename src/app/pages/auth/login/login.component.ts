@@ -102,6 +102,12 @@ export class LoginComponent implements OnInit {
                                 this.router.navigate(['/admin/dashboard'])
                             } else if (res.role === 'RECEPCIONISTA') {
                                 this.router.navigate(['/recepcionista/dashboard'])
+                            } else if (res.role === 'MESERO') {
+                                this.router.navigate(['/mesero/dashboard'])
+                            } else if (res.role === 'COCINERO') {
+                                this.router.navigate(['/cocinero/dashboard'])
+                            } else if (res.role === 'CAJERO') {
+                                this.router.navigate(['/cajero/dashboard'])
                             } else {
                                 this.router.navigate(['/cliente/my-reservations'])
                             }

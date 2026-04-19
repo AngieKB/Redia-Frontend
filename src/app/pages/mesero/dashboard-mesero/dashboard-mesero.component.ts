@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 import { OrderService } from '../../../core/services/order.service';
@@ -70,14 +71,20 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
     this.createError = '';
     this.createSuccess = false;
 
-    this.orderService.getActiveReservations().subscribe({
-      next: (res) => { this.reservations = res; },
-      error: () => { this.createError = 'No se pudieron cargar las reservas.'; }
-    });
-
-    this.menuService.getAvailableDishes().subscribe({
-      next: (dishes) => { this.dishes = dishes; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.createError = 'No se pudo cargar el menú.'; }
+    forkJoin({
+      reservations: this.orderService.getActiveReservations(),
+      dishes: this.menuService.getAvailableDishes()
+    }).subscribe({
+      next: (result) => {
+        this.reservations = result.reservations;
+        this.dishes = result.dishes;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.createError = 'Error de conexión. No se pudieron cargar los datos para el pedido.';
+        console.error('Error cargando nuevo pedido:', err);
+      }
     });
   }
 

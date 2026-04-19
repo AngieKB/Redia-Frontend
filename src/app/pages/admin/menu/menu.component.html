@@ -1,0 +1,196 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-inner">
+      <div>
+        <h1 class="page-title">🍽️ Gestión de Menú</h1>
+        <p class="page-subtitle">Administra los platillos del restaurante</p>
+      </div>
+      <button class="btn-primary" (click)="openCreate()" id="btn-nuevo-platillo">
+        + Nuevo Platillo
+      </button>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Alertas -->
+    <div class="alert-success" *ngIf="successMsg">✅ {{ successMsg }}</div>
+    <div class="alert-error" *ngIf="error && !showModal">⚠️ {{ error }}</div>
+
+    <!-- Filtros -->
+    <div class="filters-bar">
+      <select class="filter-select" [(ngModel)]="filterCategoria" (ngModelChange)="applyFilters()" id="filter-categoria">
+        <option value="">Todas las categorías</option>
+        <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+      </select>
+      <select class="filter-select" [(ngModel)]="filterEstado" (ngModelChange)="applyFilters()" id="filter-estado">
+        <option value="all">Todos los estados</option>
+        <option value="active">Disponibles</option>
+        <option value="inactive">No disponibles</option>
+      </select>
+      <span class="filter-count">{{ filteredDishes.length }} platillo(s)</span>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando menú...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!isLoading && filteredDishes.length === 0" class="empty-state">
+      <span class="empty-icon">🍽️</span>
+      <p>No hay platillos que coincidan con los filtros.</p>
+      <button class="btn-primary" (click)="openCreate()">Crear primer platillo</button>
+    </div>
+
+    <!-- Tabla de platillos -->
+    <div class="table-wrapper" *ngIf="!isLoading && filteredDishes.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dish of filteredDishes">
+            <td>
+              <img
+                *ngIf="dish.imageUrl"
+                [src]="dish.imageUrl"
+                [alt]="dish.nombre"
+                class="dish-thumb"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <span class="dish-thumb-placeholder" style="display:none">🍴</span>
+              <span class="dish-thumb-placeholder" *ngIf="!dish.imageUrl">🍴</span>
+            </td>
+            <td class="dish-name-cell">{{ dish.nombre }}</td>
+            <td>
+              <span class="category-badge">{{ dish.categoria }}</span>
+            </td>
+            <td class="desc-cell">{{ dish.descripcion }}</td>
+            <td class="price-cell">${{ dish.precio | number:'1.2-2' }}</td>
+            <td>
+              <button
+                class="toggle-btn"
+                [class.toggle-active]="dish.available"
+                [class.toggle-inactive]="!dish.available"
+                (click)="toggleAvailable(dish)"
+                [id]="'toggle-' + dish.id"
+              >
+                {{ dish.available ? '✅ Disponible' : '⛔ No disponible' }}
+              </button>
+            </td>
+            <td>
+              <div class="table-actions">
+                <button class="btn-table-edit" (click)="openEdit(dish)" [id]="'edit-' + dish.id">
+                  ✏️ Editar
+                </button>
+                <button class="btn-table-delete" (click)="askDelete(dish.id + '')" [id]="'delete-' + dish.id">
+                  🗑️ Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL — Crear / Editar Platillo
+══════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditing ? '✏️ Editar Platillo' : '➕ Nuevo Platillo' }}</h2>
+      <button class="modal-close" (click)="closeModal()" id="btn-close-modal">✕</button>
+    </div>
+
+    <div class="alert-error" *ngIf="error">⚠️ {{ error }}</div>
+
+    <form class="modal-form" (ngSubmit)="saveForm()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="field-nombre">Nombre *</label>
+          <input id="field-nombre" type="text" [(ngModel)]="form.nombre" name="nombre"
+                 placeholder="Ej. Tacos al pastor" required />
+        </div>
+        <div class="form-group">
+          <label for="field-categoria">Categoría *</label>
+          <input id="field-categoria" type="text" [(ngModel)]="form.categoria" name="categoria"
+                 placeholder="Ej. Entradas, Platos fuertes..." list="cat-suggestions" required />
+          <datalist id="cat-suggestions">
+            <option *ngFor="let cat of categorias" [value]="cat"></option>
+          </datalist>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="field-descripcion">Descripción *</label>
+        <textarea id="field-descripcion" [(ngModel)]="form.descripcion" name="descripcion"
+                  placeholder="Describe brevemente el platillo..." rows="3" required></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="field-precio">Precio (MXN) *</label>
+          <input id="field-precio" type="number" [(ngModel)]="form.precio" name="precio"
+                 placeholder="0.00" min="0" step="0.01" required />
+        </div>
+        <div class="form-group form-group-check">
+          <label class="check-label">
+            <input type="checkbox" [(ngModel)]="form.available" name="available" id="field-available" />
+            <span>Disponible en menú</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="field-imageUrl">URL de imagen</label>
+        <input id="field-imageUrl" type="url" [(ngModel)]="form.imageUrl" name="imageUrl"
+               placeholder="https://..." />
+        <div class="image-preview" *ngIf="form.imageUrl">
+          <img [src]="form.imageUrl" alt="Vista previa" class="preview-img"
+               onerror="this.style.opacity='0.3'" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="isSaving" id="btn-save-dish">
+          {{ isSaving ? 'Guardando...' : (isEditing ? 'Guardar cambios' : 'Crear platillo') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL — Confirmar eliminación
+══════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+  <div class="modal-card modal-sm" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">🗑️ Eliminar platillo</h2>
+    </div>
+    <p class="delete-msg">¿Estás seguro de que deseas eliminar este platillo? Esta acción no se puede deshacer.</p>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+      <button class="btn-delete" (click)="confirmDelete()" id="btn-confirm-delete">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

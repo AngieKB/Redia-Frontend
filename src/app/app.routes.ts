@@ -13,6 +13,7 @@ import { DashboardAdmin } from './pages/admin/dashboard-admin/dashboard-admin.co
 import { Reservations as AdminReservations } from './pages/admin/reservations/reservations.component'
 import { Users } from './pages/admin/users/users.component'
 import { TablesComponent } from './pages/admin/tables/tables.component'
+import { AdminMenuComponent } from './pages/admin/menu/menu.component'
 
 import { DashboardRecepcionista } from './pages/recepcionista/dashboard-recepcionista/dashboard-recepcionista.component'
 import { Reservations as RecepcionistaReservations } from './pages/recepcionista/reservations/reservations.component'
@@ -67,6 +68,12 @@ export const routes: Routes = [
     {
         path: 'admin/tables',
         component: TablesComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+    },
+    {
+        path: 'admin/menu',
+        component: AdminMenuComponent,
         canActivate: [RoleGuard],
         data: { roles: ['ADMINISTRADOR'] }
     },

@@ -1,7 +1,6 @@
 export interface OrderDish {
   id: number;
   dishNombre: string;
-  dishCategoria: string;
   cantidad: number;
   precioUnitario: number;
   subtotal: number;
@@ -38,7 +37,6 @@ export interface Dish {
   nombre: string;
   descripcion: string;
   precio: number;
-  categoria: string;
   imageUrl: string;
   available: boolean;
 }

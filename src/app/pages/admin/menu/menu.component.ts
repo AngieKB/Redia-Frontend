@@ -22,9 +22,7 @@ export class AdminMenuComponent implements OnInit {
   successMsg = '';
 
   // Filtros
-  filterCategoria = '';
   filterEstado = 'all';
-  categorias: string[] = [];
 
   // Modal
   showModal = false;
@@ -38,10 +36,13 @@ export class AdminMenuComponent implements OnInit {
     nombre: '',
     descripcion: '',
     precio: 0,
-    categoria: '',
-    imageUrl: '',
     available: true,
   };
+
+  // Imágenes
+  newFotoFile: File | null = null;
+  newFotoPreview: string = '';
+  currentImageUrl: string = ''; // Opcional, para mostrar en el modal lo que ya tenía
 
   constructor(private menuService: MenuService, private cdr: ChangeDetectorRef) {}
 
@@ -54,7 +55,6 @@ export class AdminMenuComponent implements OnInit {
     this.menuService.getAllDishes().subscribe({
       next: (dishes) => {
         this.dishes = dishes;
-        this.extractCategorias();
         this.applyFilters();
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -67,26 +67,23 @@ export class AdminMenuComponent implements OnInit {
     });
   }
 
-  extractCategorias() {
-    const cats = new Set(this.dishes.map((d) => d.categoria).filter(Boolean));
-    this.categorias = Array.from(cats).sort();
-  }
-
   applyFilters() {
     this.filteredDishes = this.dishes.filter((d) => {
-      const matchCat = !this.filterCategoria || d.categoria === this.filterCategoria;
       const matchStatus =
         this.filterEstado === 'all' ||
         (this.filterEstado === 'active' && d.available) ||
         (this.filterEstado === 'inactive' && !d.available);
-      return matchCat && matchStatus;
+      return matchStatus;
     });
   }
 
   openCreate() {
     this.isEditing = false;
     this.editingId = '';
-    this.form = { nombre: '', descripcion: '', precio: 0, categoria: '', imageUrl: '', available: true };
+    this.form = { nombre: '', descripcion: '', precio: 0, available: true };
+    this.newFotoFile = null;
+    this.newFotoPreview = '';
+    this.currentImageUrl = '';
     this.showModal = true;
   }
 
@@ -97,10 +94,11 @@ export class AdminMenuComponent implements OnInit {
       nombre: dish.nombre,
       descripcion: dish.descripcion,
       precio: dish.precio,
-      categoria: dish.categoria,
-      imageUrl: dish.imageUrl,
       available: dish.available,
     };
+    this.newFotoFile = null;
+    this.newFotoPreview = '';
+    this.currentImageUrl = dish.imageUrl || '';
     this.showModal = true;
   }
 
@@ -109,18 +107,47 @@ export class AdminMenuComponent implements OnInit {
     this.error = '';
   }
 
+  onFotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.newFotoFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.newFotoPreview = e.target?.result as string;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(this.newFotoFile);
+    }
+  }
+
   saveForm() {
-    if (!this.form.nombre || !this.form.descripcion || !this.form.precio || !this.form.categoria) {
+    if (!this.form.nombre || !this.form.descripcion || !this.form.precio) {
       this.error = 'Completa todos los campos requeridos.';
+      return;
+    }
+
+    // Validación de imagen en CREACIÓN
+    if (!this.isEditing && !this.newFotoFile) {
+      this.error = 'Debes subir una imagen para el nuevo platillo.';
       return;
     }
 
     this.isSaving = true;
     this.error = '';
 
+    const formData = new FormData();
+    formData.append('nombre', this.form.nombre);
+    formData.append('descripcion', this.form.descripcion);
+    formData.append('precio', this.form.precio.toString());
+    formData.append('available', this.form.available ? 'true' : 'false');
+    
+    if (this.newFotoFile) {
+      formData.append('image', this.newFotoFile);
+    }
+
     const obs = this.isEditing
-      ? this.menuService.updateDish(this.editingId, this.form)
-      : this.menuService.createDish(this.form);
+      ? this.menuService.updateDish(this.editingId, formData)
+      : this.menuService.createDish(formData);
 
     obs.subscribe({
       next: () => {

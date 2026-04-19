@@ -8,8 +8,6 @@ export interface DishRequest {
   nombre: string;
   descripcion: string;
   precio: number;
-  categoria: string;
-  imageUrl: string;
   available?: boolean;
 }
 
@@ -29,14 +27,14 @@ export class MenuService {
     return this.http.get<Dish[]>(`${this.apiUrl}/dishes/all`);
   }
 
-  /** Crear un nuevo plato — solo Admin */
-  createDish(data: DishRequest): Observable<Dish> {
-    return this.http.post<Dish>(`${this.apiUrl}/dishes`, data);
+  /** Crear un nuevo plato con imagen — solo Admin */
+  createDish(formData: FormData): Observable<Dish> {
+    return this.http.post<Dish>(`${this.apiUrl}/dishes`, formData);
   }
 
-  /** Editar un plato existente — solo Admin */
-  updateDish(id: string, data: DishRequest): Observable<Dish> {
-    return this.http.put<Dish>(`${this.apiUrl}/dishes/${id}`, data);
+  /** Editar un plato existente con imagen opcional — solo Admin */
+  updateDish(id: string, formData: FormData): Observable<Dish> {
+    return this.http.put<Dish>(`${this.apiUrl}/dishes/${id}`, formData);
   }
 
   /** Eliminar un plato — solo Admin */

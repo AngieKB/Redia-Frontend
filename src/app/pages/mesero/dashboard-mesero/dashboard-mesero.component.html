@@ -142,15 +142,6 @@
               type="text"
               placeholder="Buscar plato..."
               [(ngModel)]="dishFilter" />
-            <div class="cat-chips">
-              <button
-                *ngFor="let cat of categories"
-                class="cat-chip"
-                [class.active]="categoryFilter === cat"
-                (click)="categoryFilter = cat">
-                {{ cat }}
-              </button>
-            </div>
           </div>
 
           <!-- Grid del menú -->
@@ -166,7 +157,6 @@
               </div>
               <div class="menu-item-info">
                 <div class="menu-item-name">{{ dish.nombre }}</div>
-                <div class="menu-item-cat">{{ dish.categoria }}</div>
                 <div class="menu-item-price">{{ dish.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
               </div>
             </div>

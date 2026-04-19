@@ -31,7 +31,6 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
   orderNotas = '';
   cart: { dish: Dish; cantidad: number; notas: string }[] = [];
   dishFilter = '';
-  categoryFilter = 'Todos';
   creatingOrder = false;
   createSuccess = false;
   createError = '';
@@ -83,16 +82,10 @@ export class DashboardMeseroComponent implements OnInit, OnDestroy {
   }
 
   // ── Filtros del menú
-  get categories(): string[] {
-    const cats = [...new Set(this.dishes.map(d => d.categoria))];
-    return ['Todos', ...cats];
-  }
-
   get filteredDishes(): Dish[] {
     return this.dishes.filter(d => {
       const matchQuery = d.nombre.toLowerCase().includes(this.dishFilter.toLowerCase());
-      const matchCat = this.categoryFilter === 'Todos' || d.categoria === this.categoryFilter;
-      return matchQuery && matchCat && d.available;
+      return matchQuery && d.available;
     });
   }
 

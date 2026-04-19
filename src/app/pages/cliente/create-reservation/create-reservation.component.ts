@@ -179,9 +179,9 @@ export class CreateReservation implements OnInit {
         this.isFetchingTables = false;
         this.cdr.detectChanges();
       },
-      error: (_err) => {
+      error: (err) => {
         this.isFetchingTables = false;
-        this.errorMessage = 'Error obteniendo mesas. Inténtalo de nuevo.';
+        this.errorMessage = `Error obteniendo mesas (Código HTTP: ${err?.status || 'Desconocido'}, Detalle: ${err?.error?.message || err?.message || 'Error interno'}). Inténtalo de nuevo.`;
         this.cdr.detectChanges();
       }
     });

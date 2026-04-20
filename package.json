@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "e2e": "cypress run",
+    "e2e:open": "cypress open",
+    "e2e:headless": "cypress run --headless --browser chrome",
+    "e2e:report": "cypress run --reporter json --reporter-options \"outputFile=cypress/results/results.json\""
   },
   "private": true,
   "packageManager": "npm@11.6.2",
@@ -27,7 +31,10 @@
     "@angular/build": "^21.2.0",
     "@angular/cli": "^21.2.0",
     "@angular/compiler-cli": "^21.2.0",
+    "cypress": "^15.14.0",
+    "dotenv": "^17.4.2",
     "jsdom": "^28.0.0",
+    "mochawesome": "^7.1.4",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"

@@ -1,0 +1,145 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-04-20T04:55:11.211Z",
+    "end": "2026-04-20T04:55:24.040Z",
+    "duration": 12829,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "50dacfe1-6e12-41ae-9f6e-68859a5f69f3",
+      "title": "",
+      "fullFile": "cypress\\e2e\\3-orders.spec.cy.ts",
+      "file": "cypress\\e2e\\3-orders.spec.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e45d22c9-6330-4d6d-b55c-d1e6db2db98c",
+          "title": "Orders Tests - Acceso a órdenes por rol",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "✅ Mesero debe acceder a su dashboard",
+              "fullTitle": "Orders Tests - Acceso a órdenes por rol ✅ Mesero debe acceder a su dashboard",
+              "timedOut": null,
+              "duration": 5339,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const startTime = performance.now();\ncy.visit('/login');\ncy.get('input[type=\"email\"]').type('pruebascorreoprog@gmail.com');\ncy.get('input[type=\"password\"]').type('#12345Bv');\ncy.get('button[type=\"submit\"]').click();\ncy.url({ timeout: 8000 }).should('match', /\\/(mesero|dashboard)/);\nconst responseTime = performance.now() - startTime;\nresults.waiterAccess = responseTime;\ncy.log(`⏱️ Waiter Dashboard Access: ${responseTime.toFixed(0)}ms`);",
+              "err": {},
+              "uuid": "32619638-a7ae-47ec-9cea-c274127b3fce",
+              "parentUUID": "e45d22c9-6330-4d6d-b55c-d1e6db2db98c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "✅ Cocinero debe acceder a su dashboard",
+              "fullTitle": "Orders Tests - Acceso a órdenes por rol ✅ Cocinero debe acceder a su dashboard",
+              "timedOut": null,
+              "duration": 3637,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const startTime = performance.now();\ncy.visit('/login');\ncy.get('input[type=\"email\"]').type('correopruebasprog@gmail.com');\ncy.get('input[type=\"password\"]').type('#12345Bb');\ncy.get('button[type=\"submit\"]').click();\ncy.url({ timeout: 8000 }).should('match', /\\/(cocinero|dashboard)/);\nconst responseTime = performance.now() - startTime;\nresults.chefAccess = responseTime;\ncy.log(`⏱️ Chef Dashboard Access: ${responseTime.toFixed(0)}ms`);",
+              "err": {},
+              "uuid": "318b7eac-2cc8-43b5-9eb1-030ae1241ec7",
+              "parentUUID": "e45d22c9-6330-4d6d-b55c-d1e6db2db98c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "✅ Admin debe ver dashboard con estadísticas",
+              "fullTitle": "Orders Tests - Acceso a órdenes por rol ✅ Admin debe ver dashboard con estadísticas",
+              "timedOut": null,
+              "duration": 3719,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const startTime = performance.now();\ncy.visit('/login');\ncy.get('input[type=\"email\"]').type('admin@redia.com');\ncy.get('input[type=\"password\"]').type('Admin123');\ncy.get('button[type=\"submit\"]').click();\ncy.url({ timeout: 8000 }).should('include', '/admin/dashboard');\n// Verificar que la página cargó\ncy.get('body').should('not.be.empty');\nconst responseTime = performance.now() - startTime;\nresults.adminDashboard = responseTime;\ncy.log(`⏱️ Admin Dashboard: ${responseTime.toFixed(0)}ms`);",
+              "err": {},
+              "uuid": "19aa2399-6075-4400-bdd8-a26312d24bda",
+              "parentUUID": "e45d22c9-6330-4d6d-b55c-d1e6db2db98c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "32619638-a7ae-47ec-9cea-c274127b3fce",
+            "318b7eac-2cc8-43b5-9eb1-030ae1241ec7",
+            "19aa2399-6075-4400-bdd8-a26312d24bda"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 12695,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "report",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/results",
+        "reportFilename": "report",
+        "quiet": false,
+        "overwrite": true,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

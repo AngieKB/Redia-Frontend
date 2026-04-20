@@ -325,13 +325,25 @@ Nuestro equipo responde en menos de 5 minutos. ¡Estamos listos para ayudarte! �
   private findRelevantFAQ(query: string): ChatbotFAQ | null {
     const lowerQuery = query.toLowerCase();
 
-    // Buscar coincidencias exactas o parciales en keywords
+    // Buscar coincidencias exactas en keywords - priorizar por cantidad de matches
+    let bestMatch: { faq: ChatbotFAQ; matchCount: number } | null = null;
+
     for (const faq of this.faqs) {
+      let matchCount = 0;
       for (const keyword of faq.keywords) {
         if (lowerQuery.includes(keyword)) {
-          return faq;
+          matchCount++;
         }
       }
+
+      // Si encontramos coincidencias, guardar el que tenga más coincidencias
+      if (matchCount > 0 && (!bestMatch || matchCount > bestMatch.matchCount)) {
+        bestMatch = { faq, matchCount };
+      }
+    }
+
+    if (bestMatch) {
+      return bestMatch.faq;
     }
 
     // Búsqueda por similitud en la pregunta

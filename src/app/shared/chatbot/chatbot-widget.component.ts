@@ -21,6 +21,7 @@ export class ChatbotWidgetComponent implements OnInit, AfterViewChecked {
   newMessageCount = 0;
   messages$: Observable<ChatbotMessage[]>;
   session: ChatbotSession | null = null;
+  showingFAQ = false;
 
   constructor(private chatbotService: ChatbotService) {
     this.messages$ = this.chatbotService.getMessages();
@@ -61,6 +62,7 @@ export class ChatbotWidgetComponent implements OnInit, AfterViewChecked {
 
     this.isLoading = true;
     this.userMessage = '';
+    this.showingFAQ = true;
 
     try {
       await this.chatbotService.sendMessage(message);
@@ -89,10 +91,9 @@ export class ChatbotWidgetComponent implements OnInit, AfterViewChecked {
     return this.chatbotService.getWhatsAppLink();
   }
 
-  clearChat(): void {
-    if (confirm('¿Deseas limpiar el historial del chat?')) {
-      this.chatbotService.clearChat();
-    }
+  backToOptions(): void {
+    this.showingFAQ = false;
+    this.chatbotService.clearChat();
   }
 
   private updateNewMessageCount(messages: ChatbotMessage[]): void {

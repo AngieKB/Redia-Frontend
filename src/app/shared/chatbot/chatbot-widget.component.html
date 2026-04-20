@@ -20,8 +20,13 @@
       <h3>Chef - Soporte</h3>
     </div>
     <div class="header-actions">
-      <button class="action-btn" (click)="clearChat()" title="Limpiar chat" *ngIf="isOpen">
-        <span>🔄</span>
+      <button
+        class="action-btn"
+        (click)="backToOptions()"
+        title="Volver a opciones"
+        *ngIf="isOpen && showingFAQ"
+      >
+        <span>↩️</span>
       </button>
       <button class="close-btn" (click)="toggleChat()">
         <span *ngIf="isOpen">−</span>
@@ -123,17 +128,8 @@
       >
         📱 Contactar con ustedes
       </button>
-      <button class="suggested-btn" (click)="sendMessage('¿Cómo modifico o cancelo mi reserva?')">
-        ✏️ Modificar o cancelar
-      </button>
-      <button class="suggested-btn" (click)="sendMessage('¿Cuál es la política de cancelación?')">
-        📋 Política de cancelación
-      </button>
-      <button
-        class="suggested-btn"
-        (click)="sendMessage('¿Cuánto tiempo antes debo hacer la reserva?')"
-      >
-        ⏱️ Tiempo de anticipación
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo cancelo mi reserva?')">
+        ❌ Cancelar reserva
       </button>
       <button class="suggested-btn" (click)="sendMessage('¿Qué pasa si llego tarde?')">
         ⏰ Llego tarde
@@ -176,7 +172,7 @@
         [disabled]="!userMessage.trim() || isLoading"
         title="Enviar"
       >
-        <span *ngIf="!isLoading">📤</span>
+        <span *ngIf="!isLoading">➤</span>
         <span *ngIf="isLoading">⏳</span>
       </button>
     </div>

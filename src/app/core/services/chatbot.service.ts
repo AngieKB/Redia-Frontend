@@ -39,42 +39,37 @@ export class ChatbotService {
 ¡Listo! Recibirás una confirmación. Solo presenta tu reserva confirmada al llegar al restaurante y nuestro equipo verificará que esté registrada en el sistema.`,
       keywords: ['reserva', 'crear', 'agendar', 'reservar', 'cómo reservo', 'pasos reserva'],
     },
-    {
-      id: '2',
-      category: 'Reservas',
-      question: '¿Cómo modifico o cancelo mi reserva?',
-      answer: `Puedes modificar o cancelar tu reserva fácilmente:
-1. Ve a "Mis Reservas" en tu perfil
-2. Selecciona la reserva que deseas modificar
-3. Haz los cambios necesarios (fecha, hora, número de personas)
-4. Confirma los cambios
 
-⚠️ Importante: Los cambios deben realizarse con al menos 24 horas de anticipación para garantizar disponibilidad.
-
-Si necesitas ayuda, contáctanos por WhatsApp.`,
-      keywords: ['modificar', 'cancelar', 'cambiar', 'editar', 'mis reservas', 'cancelación'],
-    },
     {
       id: '3',
       category: 'Reservas',
-      question: '¿Cuál es la política de cancelación?',
-      answer: `Nuestra política de cancelación es flexible:
-- Más de 48 horas antes: Cancelación gratuita
-- 24-48 horas antes: 50% de cargo
-- Menos de 24 horas: Cargo completo
+      question: '¿Cómo cancelo mi reserva?',
+      answer: `¡No hay problema! Las reservas pueden ser canceladas respetando lo siguiente:
 
-Si tienes una situación especial, no dudes en contactarnos por WhatsApp. Nuestro equipo estará encantado de ayudarte. 😊`,
-      keywords: ['cancelación', 'política', 'reembolso', 'cargo', 'cancelar', 'dinero'],
-    },
-    {
-      id: '4',
-      category: 'Reservas',
-      question: '¿Cuánto tiempo antes debo hacer la reserva?',
-      answer: `Recomendamos hacer tu reserva con al menos 24 horas de anticipación para garantizar disponibilidad en tu hora y fecha preferidas.
+⚠️ **Requisito Importante:**
+- Se requiere cancelar con **mínimo 24 horas de anticipación**
+- Las cancelaciones sin aviso previo pueden afectar futuras reservas
 
-Sin embargo, si deseas una reserva urgente, puedes intentar hacerla directamente en nuestra página o contactarnos por WhatsApp para verificar disponibilidad. ¡Haremos lo posible por acomodarte! 🎉`,
-      keywords: ['anticipación', 'cuándo', 'tiempo', 'antes', 'con antelación', 'reservar ahora'],
+📱 **Cómo cancelar:**
+1. Ve a "Mis Reservas" en tu perfil
+2. Selecciona la reserva que deseas cancelar
+3. Presiona el botón "Cancelar"
+4. Confirma la cancelación
+
+❓ **¿Problemas con tu cancelación?**
+Contacta a nuestro equipo por WhatsApp y te ayudaremos. 😊`,
+      keywords: [
+        'cancelación',
+        'política',
+        'reembolso',
+        'cargo',
+        'cancelar',
+        'dinero',
+        'reserva',
+        '24 horas',
+      ],
     },
+
     {
       id: '5',
       category: 'Reservas',
@@ -136,10 +131,8 @@ Beneficios:
 📢 Promociones Actuales:
 - Descuentos por reservas en grupo
 - Promociones en determinados días
-- Menús especiales según temporada
 
 ✨ Cómo enterarte:
-- Consulta nuestra página principal
 - Contacta nuestro equipo por WhatsApp
 - Síguenos en redes sociales
 
@@ -195,7 +188,7 @@ Beneficios:
       id: '11',
       category: 'Funcionalidad',
       question: '¿Cómo me pongo en contacto con ustedes?',
-      answer: `¡Nos encanta escucharte! Aquí están nuestros canales de contacto:
+      answer: `¡Nos encanta escucharte! Aquí están nuestros canales de atención:
 
 📱 **WhatsApp:** (El mejor y más rápido)
 👉 Presiona el botón verde abajo para contactarnos
@@ -203,16 +196,28 @@ Beneficios:
 📧 **Email:** 
 👉 support@redia.com
 
+📞 **Teléfono:**
+👉 Llama durante nuestros horarios de atención
+
 🕐 **Horarios de Atención:**
 - Lunes a Viernes: 9:00 AM - 6:00 PM
 - Sábados: 11:00 AM - 4:00 PM
 - Domingos: Disponible para urgencias
 
-📍 **Chef, nuestro asistente:**
-También puedes chatear aquí mismo si no encuentras tu respuesta.
+💬 **Chef, nuestro asistente:**
+También puedes chatear aquí mismo si tienes preguntas frecuentes.
 
-¿En qué podemos ayudarte hoy? 📞`,
-      keywords: ['contacto', 'comunicación', 'llamar', 'email', 'teléfono', 'whatsapp', 'ayuda'],
+¿En qué podemos ayudarte hoy? 😊`,
+      keywords: [
+        'contacto',
+        'comunicación',
+        'llamar',
+        'email',
+        'teléfono',
+        'whatsapp',
+        'ayuda',
+        'atención',
+      ],
     },
     {
       id: '12',

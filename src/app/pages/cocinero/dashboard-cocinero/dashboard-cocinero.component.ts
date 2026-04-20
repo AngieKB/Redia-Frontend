@@ -50,6 +50,22 @@ export class DashboardCocineroComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Set para guardar los IDs de los platillos marcados como completados
+  // Se usa un Set para que sobreviva a las recargas del pollInterval
+  checkedDishes = new Set<number>();
+
+  toggleDish(dishId: number) {
+    if (this.checkedDishes.has(dishId)) {
+      this.checkedDishes.delete(dishId);
+    } else {
+      this.checkedDishes.add(dishId);
+    }
+  }
+
+  isDishChecked(dishId: number): boolean {
+    return this.checkedDishes.has(dishId);
+  }
+
   markReady(orderId: number) {
     this.orderService.markReady(orderId).subscribe({
       next: () => {

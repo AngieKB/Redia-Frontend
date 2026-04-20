@@ -65,14 +65,27 @@
 
         <!-- Platos -->
         <div class="ticket-items">
-          <div class="ticket-item" *ngFor="let item of order.dishes">
-            <div class="item-main">
-              <span class="item-qty">{{ item.cantidad }}x</span>
-              <span class="item-name">{{ item.dishNombre }}</span>
+          <div class="ticket-item" *ngFor="let item of order.dishes" 
+               [class.checked-dish]="isDishChecked(item.id)"
+               (click)="toggleDish(item.id)"
+               title="Haz clic para marcar/desmarcar plato">
+            
+            <div class="checkbox-wrapper">
+              <input type="checkbox" 
+                     [checked]="isDishChecked(item.id)" 
+                     (click)="$event.stopPropagation(); toggleDish(item.id)">
             </div>
-            <div class="item-notes" *ngIf="item.notas">
-              <span class="note-icon">↪</span> {{ item.notas }}
+
+            <div class="item-content">
+              <div class="item-main">
+                <span class="item-qty" [class.strike]="isDishChecked(item.id)">{{ item.cantidad }}x</span>
+                <span class="item-name" [class.strike]="isDishChecked(item.id)">{{ item.dishNombre }}</span>
+              </div>
+              <div class="item-notes" *ngIf="item.notas" [class.strike]="isDishChecked(item.id)">
+                <span class="note-icon">↪</span> {{ item.notas }}
+              </div>
             </div>
+
           </div>
         </div>
 

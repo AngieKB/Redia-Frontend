@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 import Swal from 'sweetalert2';
@@ -29,7 +29,8 @@ export class MyReservations implements OnInit {
   constructor(
     private reservationService: ReservationService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -130,9 +131,12 @@ export class MyReservations implements OnInit {
           next: (res) => {
             Swal.fire({
               title: 'Solicitud enviada',
-              text: 'Hemos recibido tu solicitud de baja de cuenta. Se procesará en breve.',
+              text: 'Hemos recibido tu solicitud de baja de cuenta. Se procesará en breve, así que cerraremos tu sesión.',
               icon: 'success',
               confirmButtonColor: '#bd1b5b'
+            }).then(() => {
+              this.authService.logout();
+              this.router.navigate(['/']);
             });
           },
           error: (err) => {

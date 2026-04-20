@@ -683,6 +683,21 @@
     color: var(--ion-color-secondary);
 }
 
+.role-mesero {
+    background: #e0f2f1;
+    color: #00796b;
+}
+
+.role-cocinero {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.role-cajero {
+    background: #f3e5f5;
+    color: #6a1b9a;
+}
+
 .role-cliente {
     background: #e3f2fd;
     color: #1565c0;

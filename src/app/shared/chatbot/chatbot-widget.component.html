@@ -1,0 +1,192 @@
+<!-- Botón flotante (siempre visible) -->
+<button
+  class="chatbot-floating-btn"
+  *ngIf="!isOpen"
+  (click)="toggleChat()"
+  [attr.aria-label]="
+    newMessageCount > 0 ? 'Chatbot - ' + newMessageCount + ' mensajes nuevos' : 'Abrir chatbot'
+  "
+  title="Soporte Chef"
+>
+  <span class="notification-badge" *ngIf="newMessageCount > 0">{{ newMessageCount }}</span>
+  👨‍🍳
+</button>
+
+<div class="chatbot-widget" [class.open]="isOpen">
+  <!-- Header del chat -->
+  <div class="chatbot-header">
+    <div class="header-content">
+      <span class="robot-icon">👨‍🍳</span>
+      <h3>Chef - Soporte</h3>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn" (click)="clearChat()" title="Limpiar chat" *ngIf="isOpen">
+        <span>🔄</span>
+      </button>
+      <button class="close-btn" (click)="toggleChat()">
+        <span *ngIf="isOpen">−</span>
+        <span *ngIf="!isOpen">+</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Área de mensajes y opciones (scrollable unificado) -->
+  <div class="chatbot-scroll-container" *ngIf="isOpen">
+    <!-- Mensajes -->
+    <div class="chatbot-messages" #messagesContainer>
+      <div
+        *ngFor="let message of messages$ | async"
+        class="message"
+        [class.user-message]="message.type === 'user'"
+        [class.bot-message]="message.type === 'bot'"
+        [class.agent-message]="message.type === 'agent'"
+      >
+        <div class="message-bubble">
+          <div class="message-content">{{ message.content }}</div>
+
+          <!-- Botón de WhatsApp para mensajes sin respuesta -->
+          <div
+            class="whatsapp-action"
+            *ngIf="
+              message.faqId === 'no-faq-contact' ||
+              message.faqId === '6' ||
+              message.faqId === '7' ||
+              message.faqId === '11'
+            "
+          >
+            <a [href]="getWhatsAppLink()" target="_blank" class="whatsapp-btn">
+              💚 Contactar por WhatsApp
+            </a>
+          </div>
+
+          <!-- Rating para respuestas de FAQ -->
+          <div
+            class="message-actions"
+            *ngIf="
+              message.type === 'bot' &&
+              message.faqId &&
+              message.faqId !== 'no-faq-contact' &&
+              !message.rating
+            "
+          >
+            <span class="rating-label">¿Fue útil?</span>
+            <button
+              class="rating-btn"
+              (click)="rateFAQResponse(message.id, 'positive')"
+              title="Útil"
+            >
+              👍
+            </button>
+            <button
+              class="rating-btn"
+              (click)="rateFAQResponse(message.id, 'negative')"
+              title="No fue útil"
+            >
+              👎
+            </button>
+          </div>
+
+          <!-- Botón de WhatsApp para escalada a agente -->
+          <div
+            class="whatsapp-action"
+            *ngIf="message.type === 'agent' && message.faqId !== 'no-faq-contact'"
+          >
+            <a [href]="getWhatsAppLink()" target="_blank" class="whatsapp-btn">
+              💚 Contactar por WhatsApp
+            </a>
+          </div>
+
+          <!-- Mostrar rating seleccionado -->
+          <div class="rating-selected" *ngIf="message.rating">
+            <span *ngIf="message.rating === 'positive'" class="rating-positive">👍 Útil</span>
+            <span *ngIf="message.rating === 'negative'" class="rating-negative"
+              >👎 No fue útil</span
+            >
+          </div>
+        </div>
+
+        <div class="message-time">{{ message.timestamp | date: 'short' }}</div>
+      </div>
+    </div>
+
+    <!-- Opciones sugeridas al final -->
+    <div class="suggested-actions" *ngIf="(messages$ | async)?.length === 1">
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo hago una reserva?')">
+        📅 ¿Cómo hago una reserva?
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo realizo mi pedido?')">
+        🍽️ ¿Cómo realizo mi pedido?
+      </button>
+      <button
+        class="suggested-btn"
+        (click)="sendMessage('¿Cómo me pongo en contacto con ustedes?')"
+      >
+        📱 Contactar con ustedes
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo modifico o cancelo mi reserva?')">
+        ✏️ Modificar o cancelar
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Cuál es la política de cancelación?')">
+        📋 Política de cancelación
+      </button>
+      <button
+        class="suggested-btn"
+        (click)="sendMessage('¿Cuánto tiempo antes debo hacer la reserva?')"
+      >
+        ⏱️ Tiempo de anticipación
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Qué pasa si llego tarde?')">
+        ⏰ Llego tarde
+      </button>
+      <button
+        class="suggested-btn"
+        (click)="sendMessage('¿Puedo realizar mi pedido por WhatsApp?')"
+      >
+        💬 Pedido por WhatsApp
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Hay promociones o descuentos?')">
+        🎁 Promociones
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo veo mis reservas anteriores?')">
+        📜 Mis reservas
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo cambio mi perfil?')">
+        👤 Mi perfil
+      </button>
+      <button class="suggested-btn" (click)="sendMessage('¿Cómo cambio mi contraseña?')">
+        🔐 Cambiar contraseña
+      </button>
+    </div>
+  </div>
+
+  <!-- Área de entrada de mensajes -->
+  <div class="chatbot-input-area" *ngIf="isOpen">
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="userMessage"
+        (keyup.enter)="sendMessage(userMessage)"
+        placeholder="Escribe tu pregunta..."
+        class="chat-input"
+        [disabled]="isLoading"
+      />
+      <button
+        class="send-btn"
+        (click)="sendMessage(userMessage)"
+        [disabled]="!userMessage.trim() || isLoading"
+        title="Enviar"
+      >
+        <span *ngIf="!isLoading">📤</span>
+        <span *ngIf="isLoading">⏳</span>
+      </button>
+    </div>
+
+    <!-- Opción de escalada -->
+    <div
+      class="escalate-section"
+      *ngIf="(messages$ | async)?.length! > 3 && !session?.escalatedToAgent"
+    >
+      <button class="escalate-btn" (click)="escalateToAgent()">👤 Conectar con un agente</button>
+    </div>
+  </div>
+</div>

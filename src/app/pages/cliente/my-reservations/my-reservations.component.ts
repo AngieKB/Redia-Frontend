@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 import { ReservationService } from '../../../core/services/reservation.service';
 import { Reservation } from '../../../models/reservation.model';
 
+import { AuthService } from '../../../core/services/auth.service';
+
 type ReservationStatus = 'CONFIRMADA' | 'CANCELADA' | 'FINALIZADA';
 
 @Component({
@@ -26,6 +28,7 @@ export class MyReservations implements OnInit {
 
   constructor(
     private reservationService: ReservationService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -109,5 +112,34 @@ export class MyReservations implements OnInit {
       case 'FINALIZADA': return 'status-finalizada';
       default: return 'status-default';
     }
+  }
+
+  requestDeletion() {
+    Swal.fire({
+      title: '¿Solicitar baja de cuenta?',
+      text: 'Esta acción notificará al equipo de administración para eliminar definitivamente tus datos. Ya no podrás acceder a tu historial.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e53935',
+      cancelButtonColor: '#888',
+      confirmButtonText: 'Sí, dar de baja',
+      cancelButtonText: 'Cancelar'
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        this.authService.requestDeletion().subscribe({
+          next: (res) => {
+            Swal.fire({
+              title: 'Solicitud enviada',
+              text: 'Hemos recibido tu solicitud de baja de cuenta. Se procesará en breve.',
+              icon: 'success',
+              confirmButtonColor: '#bd1b5b'
+            });
+          },
+          error: (err) => {
+            Swal.fire('Error', 'No se pudo procesar tu solicitud. Intenta de nuevo.', 'error');
+          }
+        });
+      }
+    });
   }
 }

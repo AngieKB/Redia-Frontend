@@ -6,7 +6,7 @@ describe('Orders Tests - Acceso a órdenes por rol', () => {
   // ==================== PRUEBA 1: MESERO - ACCESO A DASHBOARD ====================
   it('✅ Mesero debe acceder a su dashboard', () => {
     const startTime = performance.now();
-    
+
     cy.visit('/login');
     cy.get('input[type="email"]').type('pruebascorreoprog@gmail.com');
     cy.get('input[type="password"]').type('#12345Bv');
@@ -22,7 +22,7 @@ describe('Orders Tests - Acceso a órdenes por rol', () => {
   // ==================== PRUEBA 2: COCINERO - ACCESO A DASHBOARD ====================
   it('✅ Cocinero debe acceder a su dashboard', () => {
     const startTime = performance.now();
-    
+
     cy.visit('/login');
     cy.get('input[type="email"]').type('correopruebasprog@gmail.com');
     cy.get('input[type="password"]').type('#12345Bb');
@@ -38,14 +38,14 @@ describe('Orders Tests - Acceso a órdenes por rol', () => {
   // ==================== PRUEBA 3: ADMIN - VER ESTADÍSTICAS ====================
   it('✅ Admin debe ver dashboard con estadísticas', () => {
     const startTime = performance.now();
-    
+
     cy.visit('/login');
     cy.get('input[type="email"]').type('admin@redia.com');
     cy.get('input[type="password"]').type('Admin123');
     cy.get('button[type="submit"]').click();
 
     cy.url({ timeout: 8000 }).should('include', '/admin/dashboard');
-    
+
     // Verificar que la página cargó
     cy.get('body').should('not.be.empty');
 
@@ -57,7 +57,7 @@ describe('Orders Tests - Acceso a órdenes por rol', () => {
   after(() => {
     const endSuiteTime = Date.now();
     const totalTime = endSuiteTime - startSuiteTime;
-    
+
     cy.log('========== RESUMEN DE PRUEBAS DE ÓRDENES ==========');
     cy.log(`✅ Waiter Access: ${results.waiterAccess?.toFixed(0)}ms`);
     cy.log(`✅ Chef Access: ${results.chefAccess?.toFixed(0)}ms`);
